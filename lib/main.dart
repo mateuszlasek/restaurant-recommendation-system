@@ -1,49 +1,105 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:proj_inz/services/auth/auth.dart';
-import 'firebase_options.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:developer';
 
 
-/*
-Przypomnienie:
-Ogólnie to dużo tutaj się będzie zmieniać
-i muszę z wami omówić sposób poruszania się po aplikacji
- */
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const MyApp());
+void main() {
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Nearby Restaurants',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        primarySwatch: Colors.blue,
       ),
-      home: const AuthPage(),
+      home: RestaurantScreen(),
     );
   }
 }
 
+class RestaurantScreen extends StatefulWidget {
+  @override
+  _RestaurantScreenState createState() => _RestaurantScreenState();
+}
+
+class _RestaurantScreenState extends State<RestaurantScreen> {
+  List<dynamic> _restaurants = [];
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRestaurants();
+  }
+
+  // Funkcja pobierająca listę restauracji
+  Future<void> _loadRestaurants() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      // Stałe współrzędne dla Warszawy
+      double latitude = 52.2297;
+      double longitude = 21.0122;
+
+      // Wywołanie funkcji pobierającej dane
+      final restaurants = await fetchNearbyRestaurants(latitude, longitude);
+      setState(() {
+        _restaurants = restaurants;
+      });
+    } catch (e) {
+      print(e);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  // Funkcja wysyłająca zapytanie do Google Places API
+  Future<List<dynamic>> fetchNearbyRestaurants(double latitude, double longitude) async {
+    const apiKey = 'KLUCZ_API';  // Twój klucz API
+    final radius = 1500; // Promień w metrach
+    final type = 'restaurant'; // Typ miejsca
+
+    // Tworzenie URL do zapytania
+    final url =
+        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$latitude,$longitude&radius=$radius&type=$type&key=$apiKey';
+
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      log('data: $data');
+      return data['results'];
+    } else {
+      throw Exception('Nie udało się pobrać danych z Google Places API');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Nearby Restaurants'),
+      ),
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : ListView.builder(
+        itemCount: _restaurants.length,
+        itemBuilder: (context, index) {
+          final restaurant = _restaurants[index];
+          return ListTile(
+            title: Text(restaurant['name']),
+            subtitle: Text(restaurant['vicinity']),
+          );
+        },
+      ),
+    );
+  }
+}
