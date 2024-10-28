@@ -1,4 +1,3 @@
-// restaurant_screen.dart
 import 'package:flutter/material.dart';
 import '../services/google_api/google_api_service.dart';
 
@@ -9,7 +8,7 @@ class RestaurantScreen extends StatefulWidget {
 
 class _RestaurantScreenState extends State<RestaurantScreen> {
   final RestaurantService _restaurantService = RestaurantService();
-  List<dynamic> _restaurants = [];
+  List<Map<String, dynamic>> _restaurants = [];
   bool _isLoading = false;
 
   @override
@@ -30,10 +29,12 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
       double longitude = 19.9058631;
 
       // Wywołanie funkcji pobierającej dane z serwisu
-      final restaurants = await _restaurantService.fetchNearbyRestaurants(latitude, longitude);
-      setState(() {
-        _restaurants = restaurants;
-      });
+      final Map<String, dynamic> response = (await _restaurantService.fetchNearbyRestaurants(latitude, longitude)) as Map<String, dynamic>;
+      if (response.containsKey('places') && response['places'] is List) {
+        setState(() {
+          _restaurants = List<Map<String, dynamic>>.from(response['places']);
+        });
+      }
     } catch (e) {
       print(e);
     } finally {
@@ -56,8 +57,10 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
         itemBuilder: (context, index) {
           final restaurant = _restaurants[index];
           return ListTile(
-            title: Text(restaurant['name']),
-            subtitle: Text(restaurant['vicinity']),
+            title: Text(restaurant['displayName']?['text'] ?? 'Unknown name'),
+            subtitle: Text(
+              'Lat: ${restaurant['location']?['latitude']}, Long: ${restaurant['location']?['longitude']}',
+            ),
           );
         },
       ),
