@@ -26,8 +26,8 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
 
     try {
       // Stałe współrzędne dla Warszawy
-      double latitude = 52.2297;
-      double longitude = 21.0122;
+      double latitude = 50.0737696;
+      double longitude = 19.9058631;
 
       // Wywołanie funkcji pobierającej dane z serwisu
       final restaurants = await _restaurantService.fetchNearbyRestaurants(latitude, longitude);

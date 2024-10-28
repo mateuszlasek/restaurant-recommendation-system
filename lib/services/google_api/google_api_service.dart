@@ -1,29 +1,49 @@
 // restaurant_service.dart
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:http/http.dart' as http;
 
 class RestaurantService {
-  static const String _apiKey = 'AIzaSyDr4f6_EGr7hJsYei32vhMoJlt6gSthQdw';  // Twój klucz API
-  static const String _baseUrl = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json';
+  static const String _apiKey = '';  // Twój klucz API
+  static const String _baseUrl = 'https://places.googleapis.com/v1/places:searchNearby';
 
   Future<List<dynamic>> fetchNearbyRestaurants(double latitude, double longitude) async {
-    final radius = 300; // Promień w metrach
-    final type = 'restaurant'; // Typ miejsca
+    final url = Uri.parse(_baseUrl);
 
-    // Tworzenie URL do zapytania
-    final url =
-        '$_baseUrl?location=$latitude,$longitude&radius=$radius&type=$type&key=$_apiKey';
+    // Treść żądania JSON
+    final requestBody = {
+      "includedTypes": ["restaurant"],
+      "maxResultCount": 10,
+      "locationRestriction": {
+        "circle": {
+          "center": {
+            "latitude": latitude,
+            "longitude": longitude
+          },
+          "radius": 500.0  // Promień w metrach
+        }
+      }
+    };
 
-    final response = await http.get(Uri.parse(url));
+    // Nagłówki żądania
+    final headers = {
+      'Content-Type': 'application/json',
+      'X-Goog-Api-Key': _apiKey,
+      'X-Goog-FieldMask': 'places.displayName,places.location'  // Wybór wyświetlanych pól
+    };
+
+    // Wysłanie żądania POST
+    final response = await http.post(url, headers: headers, body: json.encode(requestBody));
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       log('data: $data');
-      return data['results'];
+      return data['places'];
     } else {
-      throw Exception('Nie udało się pobrać danych z Google Places API');
+      // Wyświetlenie statusu i treści odpowiedzi w przypadku błędu
+      log('Request failed with status: ${response.statusCode}');
+      log('Response body: ${response.body}');
+      throw Exception('Nie udało się pobrać danych z Google Places API. Status: ${response.statusCode}');
     }
   }
 }
