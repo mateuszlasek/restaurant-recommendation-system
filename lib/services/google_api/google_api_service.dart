@@ -29,7 +29,50 @@ class RestaurantService {
     final headers = {
       'Content-Type': 'application/json',
       'X-Goog-Api-Key': _apiKey,
-      'X-Goog-FieldMask': 'places.displayName,places.location'  // Wybór wyświetlanych pól
+      'X-Goog-FieldMask': ''
+          'places.name,'
+          'places.id,'
+          'places.types,'  // Wybór wyświetlanych pól
+          'places.formattedAddress,'  // Wybór wyświetlanych pól
+          'places.internationalPhoneNumber,'  // Wybór wyświetlanych pól
+          'places.addressComponents,'  // Wybór wyświetlanych pól
+          'places.location,'  // Wybór wyświetlanych pól
+          'places.viewport,'  // Wybór wyświetlanych pól
+          'places.rating,'  // Wybór wyświetlanych pól
+          'places.googleMapsUri,'  // Wybór wyświetlanych pól
+          'places.websiteUri,'  // Wybór wyświetlanych pól
+          'places.regularOpeningHours,'  // Wybór wyświetlanych pól
+          'places.businessStatus,'  // Wybór wyświetlanych pól
+          'places.priceLevel,'  // Wybór wyświetlanych pól
+          'places.userRatingCount,'  // Wybór wyświetlanych pól
+          'places.displayName,'  // Wybór wyświetlanych pól
+          'places.primaryTypeDisplayName,'  // Wybór wyświetlanych pól
+          'places.takeout,'  // Wybór wyświetlanych pól
+          'places.delivery,'  // Wybór wyświetlanych pól
+          'places.dineIn,'  // Wybór wyświetlanych pól
+          'places.curbsidePickup,'  // Wybór wyświetlanych pól
+          'places.servesBreakfast,'  // Wybór wyświetlanych pól
+          'places.servesLunch,'  // Wybór wyświetlanych pól
+          'places.servesDinner,'  // Wybór wyświetlanych pól
+          'places.servesBeer,'  // Wybór wyświetlanych pól
+          'places.servesWine,'  // Wybór wyświetlanych pól
+          'places.servesWine,'  // Wybór wyświetlanych pól
+          'places.servesVegetarianFood,'  // Wybór wyświetlanych pól
+          'places.primaryType,'  // Wybór wyświetlanych pól
+          'places.shortFormattedAddress,'  // Wybór wyświetlanych pól
+          'places.outdoorSeating,'  // Wybór wyświetlanych pól
+          'places.liveMusic,'  // Wybór wyświetlanych pól
+          'places.menuForChildren,'  // Wybór wyświetlanych pól
+          'places.servesCocktails,'  // Wybór wyświetlanych pól
+          'places.servesDessert,'  // Wybór wyświetlanych pól
+          'places.servesCoffee,'  // Wybór wyświetlanych pól
+          'places.goodForChildren,'  // Wybór wyświetlanych pól
+          'places.allowsDogs,'  // Wybór wyświetlanych pól
+          'places.restroom,'  // Wybór wyświetlanych pól
+          'places.goodForWatchingSports,'  // Wybór wyświetlanych pól
+          'places.paymentOptions,'  // Wybór wyświetlanych pól
+          'places.parkingOptions,'  // Wybór wyświetlanych pól
+          'places.accessibilityOptions,'  // Wybór wyświetlanych pól
     };
 
     // Wysłanie żądania POST
