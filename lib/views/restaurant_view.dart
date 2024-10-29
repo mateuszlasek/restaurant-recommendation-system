@@ -8,7 +8,7 @@ class RestaurantScreen extends StatefulWidget {
 
 class _RestaurantScreenState extends State<RestaurantScreen> {
   final RestaurantService _restaurantService = RestaurantService();
-  List<Map<String, dynamic>> _restaurants = [];
+  List<dynamic> _restaurants = [];
   bool _isLoading = false;
 
   @override
@@ -24,17 +24,15 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
     });
 
     try {
-      // Stałe współrzędne dla Warszawy
+      // Stałe współrzędne dla Krakowa
       double latitude = 50.0737696;
       double longitude = 19.9058631;
 
       // Wywołanie funkcji pobierającej dane z serwisu
-      final Map<String, dynamic> response = (await _restaurantService.fetchNearbyRestaurants(latitude, longitude)) as Map<String, dynamic>;
-      if (response.containsKey('places') && response['places'] is List) {
-        setState(() {
-          _restaurants = List<Map<String, dynamic>>.from(response['places']);
-        });
-      }
+      final List<dynamic> response = await _restaurantService.fetchNearbyRestaurants(latitude, longitude);
+      setState(() {
+        _restaurants = response;
+      });
     } catch (e) {
       print(e);
     } finally {
@@ -56,10 +54,36 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
         itemCount: _restaurants.length,
         itemBuilder: (context, index) {
           final restaurant = _restaurants[index];
+
+          // Sprawdzanie, czy restauracja istnieje i czy zawiera klucze
+          if (restaurant == null || !restaurant.containsKey('displayName')) {
+            return ListTile(
+              title: Text('Unknown restaurant'),
+            );
+          }
+
+          // Pobieranie nazwy restauracji
+          final displayName = restaurant['displayName']?['text'] ?? 'Unknown name';
+          final formattedAddress = restaurant['formattedAddress'] ?? 'No address available';
+          final rating = restaurant['rating']?.toString() ?? 'N/A';
+          final location = restaurant['location'];
+          final latitude = location?['latitude']?.toString() ?? 'N/A';
+          final longitude = location?['longitude']?.toString() ?? 'N/A';
+
           return ListTile(
-            title: Text(restaurant['displayName']?['text'] ?? 'Unknown name'),
-            subtitle: Text(
-              'Lat: ${restaurant['location']?['latitude']}, Long: ${restaurant['location']?['longitude']}',
+            title: Text(displayName),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(formattedAddress),
+                Text(
+                  'Rating: $rating',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  'Lat: $latitude, Long: $longitude',
+                ),
+              ],
             ),
           );
         },
