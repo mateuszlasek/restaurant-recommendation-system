@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/google_api/google_api_service.dart';
+import 'restaurant_detail_screen.dart'; // Import the new detail screen
 
 class RestaurantScreen extends StatefulWidget {
   @override
@@ -17,18 +18,15 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
     _loadRestaurants();
   }
 
-  // Funkcja pobierająca listę restauracji
   Future<void> _loadRestaurants() async {
     setState(() {
       _isLoading = true;
     });
 
     try {
-      // Stałe współrzędne dla Krakowa
       double latitude = 50.0737696;
       double longitude = 19.9058631;
 
-      // Wywołanie funkcji pobierającej dane z serwisu
       final List<dynamic> response = await _restaurantService.fetchNearbyRestaurants(latitude, longitude);
       setState(() {
         _restaurants = response;
@@ -55,14 +53,12 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
         itemBuilder: (context, index) {
           final restaurant = _restaurants[index];
 
-          // Sprawdzanie, czy restauracja istnieje i czy zawiera klucze
           if (restaurant == null || !restaurant.containsKey('displayName')) {
             return ListTile(
               title: Text('Unknown restaurant'),
             );
           }
 
-          // Pobieranie nazwy restauracji
           final displayName = restaurant['displayName']?['text'] ?? 'Unknown name';
           final formattedAddress = restaurant['formattedAddress'] ?? 'No address available';
           final rating = restaurant['rating']?.toString() ?? 'N/A';
@@ -85,6 +81,15 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                 ),
               ],
             ),
+            onTap: () {
+              // Navigate to RestaurantDetailScreen on tap
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => RestaurantDetailScreen(restaurant: restaurant),
+                ),
+              );
+            },
           );
         },
       ),
