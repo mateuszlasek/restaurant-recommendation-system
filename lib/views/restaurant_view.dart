@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/google_api/google_api_service.dart';
-import 'restaurant_detail_screen.dart'; // Import the new detail screen
+import 'restaurant_detail_screen.dart';
 
 class RestaurantScreen extends StatefulWidget {
   @override
@@ -82,7 +82,6 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
               ],
             ),
             onTap: () {
-              // Navigate to RestaurantDetailScreen on tap
               Navigator.push(
                 context,
                 MaterialPageRoute(

@@ -1,4 +1,3 @@
-// restaurant_detail_screen.dart
 import 'package:flutter/material.dart';
 
 class RestaurantDetailScreen extends StatelessWidget {
