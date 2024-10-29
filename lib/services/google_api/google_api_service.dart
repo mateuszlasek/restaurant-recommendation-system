@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'package:http/http.dart' as http;
 
 class RestaurantService {
-  static const String _apiKey = '';  // Twój klucz API
+  static const String _apiKey = 'AIzaSyDr4f6_EGr7hJsYei32vhMoJlt6gSthQdw';  // Twój klucz API
   static const String _baseUrl = 'https://places.googleapis.com/v1/places:searchNearby';
 
   Future<List<dynamic>> fetchNearbyRestaurants(double latitude, double longitude) async {
