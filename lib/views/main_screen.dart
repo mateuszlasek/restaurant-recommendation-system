@@ -8,6 +8,8 @@ import '../components/app_bar.dart';
 import '../components/navigation_bar.dart';
 
 class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
+
   @override
   _MainScreenState createState() => _MainScreenState();
 }
