@@ -56,7 +56,6 @@ class RestaurantService {
           'places.servesDinner,'  // Wybór wyświetlanych pól
           'places.servesBeer,'  // Wybór wyświetlanych pól
           'places.servesWine,'  // Wybór wyświetlanych pól
-          'places.servesWine,'  // Wybór wyświetlanych pól
           'places.servesVegetarianFood,'  // Wybór wyświetlanych pól
           'places.primaryType,'  // Wybór wyświetlanych pól
           'places.shortFormattedAddress,'  // Wybór wyświetlanych pól
