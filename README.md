@@ -30,3 +30,15 @@ samples, guidance on mobile development, and a full API reference.
     - **wheelchairAccessibleParking**
     - **wheelchairAccessibleEntrance**
     - **wheelchairAccessibleRestroom**
+
+# TODO:
+- [x] zapytanie do google API
+- [x] plan podziału widoków
+- [x] autentykacja użytkownika i połączenie z Firebase
+- [x] model formularza
+- [x] lokalizacja
+- [ ] sam formularz (widok/UI)
+- [ ] baza danych - uzytkownik
+- [ ] algorytm
+- [ ] implementacja map google
+- [ ] TODO todo
