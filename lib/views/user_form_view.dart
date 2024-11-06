@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart'; // Import Firebase Realtime Database
 import 'package:firebase_core/firebase_core.dart';
@@ -51,11 +52,22 @@ class _UserFormViewState extends State<UserFormView> {
         app: app, // Przypisujemy app do bazy danych
         databaseURL: 'https://restaurant-recommendatio-57162-default-rtdb.europe-west1.firebasedatabase.app', // URL bazy danych
       );
+
       DatabaseReference ref = database.ref('user_forms').push(); // Zapisanie danych do 'user_forms'
+      getUserUID();
       await ref.set(userForm.toMap()); // Zapisanie danych formularza
       print('Data submitted successfully!');
     } catch (e) {
       print('Error submitting data: $e');
+    }
+  }
+  void getUserUID() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      String uid = user.uid;
+      print("User UID: $uid");
+    } else {
+      print("No user is logged in");
     }
   }
 
