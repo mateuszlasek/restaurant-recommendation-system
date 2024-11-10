@@ -31,6 +31,26 @@ class UserFormModel {
     required this.wheelchairAccessibleRestroom,
   });
 
+  // Convert Map to UserFormModel
+  factory UserFormModel.fromMap(Map<String, dynamic> map) {
+    return UserFormModel(
+      name: map['name'] ?? '',
+      servesVegetarianFood: map['servesVegetarianFood'] ?? false,
+      menuForChildren: map['menuForChildren'] ?? false,
+      goodForChildren: map['goodForChildren'] ?? false,
+      allowsDogs: map['allowsDogs'] ?? false,
+      acceptsCreditCards: map['acceptsCreditCards'] ?? false,
+      acceptsDebitCards: map['acceptsDebitCards'] ?? false,
+      acceptsCashOnly: map['acceptsCashOnly'] ?? false,
+      acceptsNfc: map['acceptsNfc'] ?? false,
+      freeParkingLot: map['freeParkingLot'] ?? false,
+      paidParkingLot: map['paidParkingLot'] ?? false,
+      wheelchairAccessibleParking: map['wheelchairAccessibleParking'] ?? false,
+      wheelchairAccessibleEntrance: map['wheelchairAccessibleEntrance'] ?? false,
+      wheelchairAccessibleRestroom: map['wheelchairAccessibleRestroom'] ?? false,
+    );
+  }
+
   // Konwersja obiektu do mapy, aby można było zapisać go w Firebase
   Map<String, dynamic> toMap() {
     return {

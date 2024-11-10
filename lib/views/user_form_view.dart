@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart'; // Import Firebase Realtime Database
 import 'package:firebase_core/firebase_core.dart';
 
-import '../models/user_form_model.dart'; // Dodajemy import Firebase core, aby używać app
+import '../models/user_form_model.dart';
+import '../services/firebase_database/firebase_service.dart'; // Dodajemy import Firebase core, aby używać app
 
 class UserFormView extends StatefulWidget {
   @override
@@ -12,6 +13,10 @@ class UserFormView extends StatefulWidget {
 
 class _UserFormViewState extends State<UserFormView> {
   final _nameController = TextEditingController();
+  final FirebaseService _firebaseService = FirebaseService(
+    databaseURL: 'https://restaurant-recommendatio-57162-default-rtdb.europe-west1.firebasedatabase.app',
+  );
+
   bool _servesVegetarianFood = false;
   bool _menuForChildren = false;
   bool _goodForChildren = false;
@@ -26,7 +31,6 @@ class _UserFormViewState extends State<UserFormView> {
   bool _wheelchairAccessibleEntrance = false;
   bool _wheelchairAccessibleRestroom = false;
 
-  // Zaktualizowana metoda do zapisania formularza
   Future<void> _submitForm() async {
     final userForm = UserFormModel(
       name: _nameController.text,
@@ -45,29 +49,33 @@ class _UserFormViewState extends State<UserFormView> {
       wheelchairAccessibleRestroom: _wheelchairAccessibleRestroom,
     );
 
-    try {
-      // Uzyskanie instancji FirebaseDatabase z odpowiednim URL bazy
-      FirebaseApp app = await Firebase.initializeApp(); // Inicjalizujemy aplikację Firebase
-      FirebaseDatabase database = FirebaseDatabase.instanceFor(
-        app: app, // Przypisujemy app do bazy danych
-        databaseURL: 'https://restaurant-recommendatio-57162-default-rtdb.europe-west1.firebasedatabase.app', // URL bazy danych
-      );
 
-      DatabaseReference ref = database.ref('user_forms').push(); // Zapisanie danych do 'user_forms'
-      getUserUID();
-      await ref.set(userForm.toMap()); // Zapisanie danych formularza
-      print('Data submitted successfully!');
-    } catch (e) {
-      print('Error submitting data: $e');
+    await _firebaseService.submitUserForm(userForm);
+  }
+
+  // Funkcja do usunięcia formularza
+  Future<void> _deleteForm() async {
+    final uid = await _firebaseService.getUserUID();
+    if (uid != null) {
+      await _firebaseService.deleteUserFormByUID(uid);
+      print("User form with UID $uid deleted successfully.");
+    } else {
+      print("Error: No UID found.");
     }
   }
-  void getUserUID() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      String uid = user.uid;
-      print("User UID: $uid");
+
+  // Funkcja do pobrania formularza
+  Future<void> _getForm() async {
+    final uid = await _firebaseService.getUserUID();
+    if (uid != null) {
+      final userForm = await _firebaseService.getUserFormByUID(uid);
+      if (userForm != null) {
+        print("User form data: ${userForm.toMap()}");
+      } else {
+        print("No data found for UID $uid.");
+      }
     } else {
-      print("No user is logged in");
+      print("Error: No UID found.");
     }
   }
 
@@ -207,6 +215,16 @@ class _UserFormViewState extends State<UserFormView> {
               ElevatedButton(
                 onPressed: _submitForm,
                 child: Text('Submit'),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _getForm,
+                child: Text('Get Form'),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _deleteForm,
+                child: Text('Delete Form'),
               ),
             ],
           ),
