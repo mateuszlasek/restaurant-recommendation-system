@@ -1,10 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_database/firebase_database.dart'; // Import Firebase Realtime Database
-import 'package:firebase_core/firebase_core.dart';
-
 import '../models/user_form_model.dart';
-import '../services/firebase_database/firebase_service.dart'; // Dodajemy import Firebase core, aby używać app
+import '../services/firebase_database/firebase_service.dart';
 
 class UserFormView extends StatefulWidget {
   @override
@@ -12,7 +8,6 @@ class UserFormView extends StatefulWidget {
 }
 
 class _UserFormViewState extends State<UserFormView> {
-  final _nameController = TextEditingController();
   final FirebaseService _firebaseService = FirebaseService(
     databaseURL: 'https://restaurant-recommendatio-57162-default-rtdb.europe-west1.firebasedatabase.app',
   );
@@ -31,9 +26,32 @@ class _UserFormViewState extends State<UserFormView> {
   bool _wheelchairAccessibleEntrance = false;
   bool _wheelchairAccessibleRestroom = false;
 
+  int _currentPageIndex = 0;
+
+  final List<String> _categories = [
+    'Informacje o restauracji',
+    'Jakie opcje płatności są dla mnie priorytetem',
+    'Dostępność',
+  ];
+
+  void _nextPage() {
+    setState(() {
+      if (_currentPageIndex < _categories.length - 1) {
+        _currentPageIndex++;
+      }
+    });
+  }
+
+  void _previousPage() {
+    setState(() {
+      if (_currentPageIndex > 0) {
+        _currentPageIndex--;
+      }
+    });
+  }
+
   Future<void> _submitForm() async {
     final userForm = UserFormModel(
-      name: _nameController.text,
       servesVegetarianFood: _servesVegetarianFood,
       menuForChildren: _menuForChildren,
       goodForChildren: _goodForChildren,
@@ -49,33 +67,116 @@ class _UserFormViewState extends State<UserFormView> {
       wheelchairAccessibleRestroom: _wheelchairAccessibleRestroom,
     );
 
-
     await _firebaseService.submitUserForm(userForm);
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('Formularz zapisany pomyślnie!'),
+    ));
   }
 
-  // Funkcja do usunięcia formularza
-  Future<void> _deleteForm() async {
-    final uid = await _firebaseService.getUserUID();
-    if (uid != null) {
-      await _firebaseService.deleteUserFormByUID(uid);
-      print("User form with UID $uid deleted successfully.");
-    } else {
-      print("Error: No UID found.");
-    }
-  }
-
-  // Funkcja do pobrania formularza
-  Future<void> _getForm() async {
-    final uid = await _firebaseService.getUserUID();
-    if (uid != null) {
-      final userForm = await _firebaseService.getUserFormByUID(uid);
-      if (userForm != null) {
-        print("User form data: ${userForm.toMap()}");
-      } else {
-        print("No data found for UID $uid.");
-      }
-    } else {
-      print("Error: No UID found.");
+  Widget _buildCategoryContent() {
+    switch (_currentPageIndex) {
+      case 0:
+        return Column(
+          children: [
+            SwitchListTile(
+              title: Text('Zależy mi na opcjach wegetariańskich w menu'),
+              value: _servesVegetarianFood,
+              onChanged: (value) {
+                setState(() {
+                  _servesVegetarianFood = value;
+                });
+              },
+            ),
+            SwitchListTile(
+              title: Text('Udogodniania dla dzieci są dla mnie istotne'),
+              value: _menuForChildren,
+              onChanged: (value) {
+                setState(() {
+                  _goodForChildren = value;
+                  _menuForChildren = value;
+                });
+              },
+            ),
+            SwitchListTile(
+              title: Text('Zdarza mi się przyjść do restauracji z psem lub innym zwierzęciem'),
+              value: _allowsDogs,
+              onChanged: (value) {
+                setState(() {
+                  _allowsDogs = value;
+                });
+              },
+            ),
+          ],
+        );
+      case 1:
+        return Column(
+          children: [
+            SwitchListTile(
+              title: Text('Karta kredytowa'),
+              value: _acceptsCreditCards,
+              onChanged: (value) {
+                setState(() {
+                  _acceptsCreditCards = value;
+                });
+              },
+            ),
+            SwitchListTile(
+              title: Text('Karta debetowa'),
+              value: _acceptsDebitCards,
+              onChanged: (value) {
+                setState(() {
+                  _acceptsDebitCards = value;
+                });
+              },
+            ),
+            SwitchListTile(
+              title: Text('Płatności NFC'),
+              value: _acceptsNfc,
+              onChanged: (value) {
+                setState(() {
+                  _acceptsNfc = value;
+                });
+              },
+            ),
+            SwitchListTile(
+              title: Text('Płatność tylko gotówką nie jest dla mnie problemem'),
+              value: _acceptsCashOnly,
+              onChanged: (value) {
+                setState(() {
+                  _acceptsCashOnly = value;
+                });
+              },
+            ),
+          ],
+        );
+      case 2:
+        return Column(
+          children: [
+            SwitchListTile(
+              title: Text('Zależy mi na bezpłatnym parkingu w okolicy'),
+              value: _freeParkingLot,
+              onChanged: (value) {
+                setState(() {
+                  _freeParkingLot = value;
+                  _paidParkingLot = !value;
+                });
+              },
+            ),
+            SwitchListTile(
+              title: Text('Zależy mi na udogodnieniach dla osób z niepełnosprawnością ruchową'),
+              value: _wheelchairAccessibleParking,
+              onChanged: (value) {
+                setState(() {
+                  _wheelchairAccessibleParking = value;
+                  _wheelchairAccessibleEntrance = value;
+                  _wheelchairAccessibleRestroom = value;
+                });
+              },
+            ),
+          ],
+        );
+      default:
+        return Container();
     }
   }
 
@@ -83,151 +184,40 @@ class _UserFormViewState extends State<UserFormView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('User Form'),
+        title: Text('Formularz użytkownika'),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              TextField(
-                controller: _nameController,
-                decoration: InputDecoration(labelText: 'Restaurant Name'),
-              ),
-              SwitchListTile(
-                title: Text('Serves Vegetarian Food'),
-                value: _servesVegetarianFood,
-                onChanged: (value) {
-                  setState(() {
-                    _servesVegetarianFood = value;
-                  });
-                },
-              ),
-              SwitchListTile(
-                title: Text('Menu for Children'),
-                value: _menuForChildren,
-                onChanged: (value) {
-                  setState(() {
-                    _menuForChildren = value;
-                  });
-                },
-              ),
-              SwitchListTile(
-                title: Text('Good for Children'),
-                value: _goodForChildren,
-                onChanged: (value) {
-                  setState(() {
-                    _goodForChildren = value;
-                  });
-                },
-              ),
-              SwitchListTile(
-                title: Text('Allows Dogs'),
-                value: _allowsDogs,
-                onChanged: (value) {
-                  setState(() {
-                    _allowsDogs = value;
-                  });
-                },
-              ),
-              SwitchListTile(
-                title: Text('Accepts Credit Cards'),
-                value: _acceptsCreditCards,
-                onChanged: (value) {
-                  setState(() {
-                    _acceptsCreditCards = value;
-                  });
-                },
-              ),
-              SwitchListTile(
-                title: Text('Accepts Debit Cards'),
-                value: _acceptsDebitCards,
-                onChanged: (value) {
-                  setState(() {
-                    _acceptsDebitCards = value;
-                  });
-                },
-              ),
-              SwitchListTile(
-                title: Text('Accepts Cash Only'),
-                value: _acceptsCashOnly,
-                onChanged: (value) {
-                  setState(() {
-                    _acceptsCashOnly = value;
-                  });
-                },
-              ),
-              SwitchListTile(
-                title: Text('Accepts NFC'),
-                value: _acceptsNfc,
-                onChanged: (value) {
-                  setState(() {
-                    _acceptsNfc = value;
-                  });
-                },
-              ),
-              SwitchListTile(
-                title: Text('Free Parking Lot'),
-                value: _freeParkingLot,
-                onChanged: (value) {
-                  setState(() {
-                    _freeParkingLot = value;
-                  });
-                },
-              ),
-              SwitchListTile(
-                title: Text('Paid Parking Lot'),
-                value: _paidParkingLot,
-                onChanged: (value) {
-                  setState(() {
-                    _paidParkingLot = value;
-                  });
-                },
-              ),
-              SwitchListTile(
-                title: Text('Wheelchair Accessible Parking'),
-                value: _wheelchairAccessibleParking,
-                onChanged: (value) {
-                  setState(() {
-                    _wheelchairAccessibleParking = value;
-                  });
-                },
-              ),
-              SwitchListTile(
-                title: Text('Wheelchair Accessible Entrance'),
-                value: _wheelchairAccessibleEntrance,
-                onChanged: (value) {
-                  setState(() {
-                    _wheelchairAccessibleEntrance = value;
-                  });
-                },
-              ),
-              SwitchListTile(
-                title: Text('Wheelchair Accessible Restroom'),
-                value: _wheelchairAccessibleRestroom,
-                onChanged: (value) {
-                  setState(() {
-                    _wheelchairAccessibleRestroom = value;
-                  });
-                },
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _submitForm,
-                child: Text('Submit'),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _getForm,
-                child: Text('Get Form'),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _deleteForm,
-                child: Text('Delete Form'),
-              ),
-            ],
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              _categories[_currentPageIndex],
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 16),
+            Expanded(child: _buildCategoryContent()),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                if (_currentPageIndex > 0)
+                  ElevatedButton(
+                    onPressed: _previousPage,
+                    child: Text('Poprzedni'),
+                  ),
+                if (_currentPageIndex < _categories.length - 1)
+                  ElevatedButton(
+                    onPressed: _nextPage,
+                    child: Text('Następny'),
+                  ),
+                if (_currentPageIndex == _categories.length - 1)
+                  ElevatedButton(
+                    onPressed: _submitForm,
+                    child: Text('Zapisz'),
+                  ),
+              ],
+            ),
+          ],
         ),
       ),
     );

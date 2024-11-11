@@ -1,5 +1,4 @@
 class UserFormModel {
-  final String name;
   final bool servesVegetarianFood;
   final bool menuForChildren;
   final bool goodForChildren;
@@ -15,7 +14,6 @@ class UserFormModel {
   final bool wheelchairAccessibleRestroom;
 
   UserFormModel({
-    required this.name,
     required this.servesVegetarianFood,
     required this.menuForChildren,
     required this.goodForChildren,
@@ -34,7 +32,6 @@ class UserFormModel {
   // Convert Map to UserFormModel
   factory UserFormModel.fromMap(Map<String, dynamic> map) {
     return UserFormModel(
-      name: map['name'] ?? '',
       servesVegetarianFood: map['servesVegetarianFood'] ?? false,
       menuForChildren: map['menuForChildren'] ?? false,
       goodForChildren: map['goodForChildren'] ?? false,
@@ -54,7 +51,6 @@ class UserFormModel {
   // Konwersja obiektu do mapy, aby można było zapisać go w Firebase
   Map<String, dynamic> toMap() {
     return {
-      'name': name,
       'servesVegetarianFood': servesVegetarianFood,
       'menuForChildren': menuForChildren,
       'goodForChildren': goodForChildren,
