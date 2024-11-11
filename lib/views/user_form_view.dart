@@ -78,20 +78,21 @@ class _UserFormViewState extends State<UserFormView> {
     print("DUPA");
     // Definicja preferencji użytkownika
     final userPreferences = {
-      'acceptsCashOnly': true,
-      'acceptsCreditCards': false,
-      'acceptsDebitCards': false,
-      'acceptsNfc': false,
-      'allowsDogs': false,
-      'freeParkingLot': false,
+      'acceptsCashOnly': false,
+      'acceptsCreditCards': true,
+      'acceptsDebitCards': true,
+      'acceptsNfc': true,
+      'allowsDogs': true,
+      'freeParkingLot': true,
       'goodForChildren': true,
       'menuForChildren': false,
       'paidParkingLot': false,
-      'servesVegetarianFood': false,
-      'wheelchairAccessibleEntrance': false,
-      'wheelchairAccessibleParking': false,
+      'servesVegetarianFood': true,
+      'wheelchairAccessibleEntrance': true,
+      'wheelchairAccessibleParking': true,
       'wheelchairAccessibleRestroom': false,
     };
+
     // Definicja wag preferencji użytkownika
     final preferenceWeights = {
       'acceptsCashOnly': 1,
@@ -128,8 +129,8 @@ class _UserFormViewState extends State<UserFormView> {
         'wheelchairAccessibleRestroom': true,
       },
       {
-        'name': 'Restaurant B',
-        'acceptsCashOnly': true,
+        'name': 'Cafe B',
+        'acceptsCashOnly': false,
         'acceptsCreditCards': true,
         'acceptsDebitCards': false,
         'acceptsNfc': true,
@@ -147,16 +148,13 @@ class _UserFormViewState extends State<UserFormView> {
     ];
 
     // Tworzenie instancji serwisu rekomendacji
-    final recommendationService = RecommendationService(userPreferences: userPreferences, preferenceWeights: preferenceWeights);
-
-    // Pobieranie rekomendacji z dodatkowymi kryteriami
-    final recommendedItems = recommendationService.getRecommendations(
-      items,
-      additionalCriteria: {
-        'servesVegetarianFood': true,
-        'freeParkingLot': true,
-      },
+    final recommendationService = RecommendationService(
+      userPreferences: userPreferences,
+      preferenceWeights: preferenceWeights,
     );
+
+    // Pobieranie rekomendacji
+    final recommendedItems = recommendationService.getRecommendations(items);
 
     // Wyświetlenie posortowanej listy
     for (var item in recommendedItems) {

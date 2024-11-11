@@ -1,5 +1,7 @@
+import 'dart:math';
+
 class RecommendationService {
-  // Konfiguracja z preferencjami użytkownika (Boolean) i mapą wag
+  // Konfiguracja z preferencjami użytkownika i wagami
   final Map<String, bool> userPreferences;
   final Map<String, int> preferenceWeights;
 
@@ -9,7 +11,7 @@ class RecommendationService {
     required this.preferenceWeights,
   });
 
-  // Funkcja sortująca listę według dopasowania
+  // Funkcja sortująca listę według podobieństwa cosinusowego
   List<Map<String, dynamic>> getRecommendations(
       List<Map<String, dynamic>> items,
       {Map<String, bool>? additionalCriteria, Map<String, int>? additionalWeights}) {
@@ -20,26 +22,43 @@ class RecommendationService {
 
     // Obliczanie dopasowania każdego elementu
     items.sort((a, b) {
-      int scoreA = _calculateScore(a, combinedPreferences, combinedWeights);
-      int scoreB = _calculateScore(b, combinedPreferences, combinedWeights);
+      double scoreA = _calculateCosineSimilarity(a, combinedPreferences, combinedWeights);
+      double scoreB = _calculateCosineSimilarity(b, combinedPreferences, combinedWeights);
       return scoreB.compareTo(scoreA); // Sortowanie malejąco po dopasowaniu
     });
 
     return items;
   }
 
-  // Funkcja obliczająca score dopasowania dla pojedynczego elementu
-  int _calculateScore(Map<String, dynamic> item, Map<String, bool> preferences, Map<String, int> weights) {
-    int score = 0;
+  // Funkcja obliczająca podobieństwo cosinusowe między preferencjami użytkownika a elementem
+  double _calculateCosineSimilarity(
+      Map<String, dynamic> item, Map<String, bool> preferences, Map<String, int> weights) {
+
+    double dotProduct = 0;
+    double userMagnitude = 0;
+    double itemMagnitude = 0;
 
     preferences.forEach((key, value) {
-      // Pobieramy wagę lub domyślnie ustawiamy 1, jeśli brak jej w mapie wag
-      int weight = weights[key] ?? 1;
-      if (value == true && item[key] == true) {
-        score += weight; // Dodajemy wagę, jeśli preferencja jest spełniona
-      }
+      int weight = weights[key] ?? 1; // Domyślna waga 1
+
+      // Wektor użytkownika: 1 (ważony przez wagę), jeśli preferencja jest `true`; inaczej 0
+      double userValue = value ? weight.toDouble() : 0;
+      // Wektor elementu: 1 (ważony przez wagę), jeśli element spełnia kryterium; inaczej 0
+      double itemValue = (item[key] == true) ? weight.toDouble() : 0;
+
+      // Liczenie iloczynu skalarny (dot product)
+      dotProduct += userValue * itemValue;
+      // Liczenie długości wektora użytkownika
+      userMagnitude += pow(userValue, 2);
+      // Liczenie długości wektora elementu
+      itemMagnitude += pow(itemValue, 2);
     });
 
-    return score;
+    // Obliczenie końcowego wyniku podobieństwa cosinusowego
+    if (userMagnitude == 0 || itemMagnitude == 0) {
+      return 0; // Jeśli jeden z wektorów jest zerowy, zwróć 0, brak podobieństwa
+    } else {
+      return dotProduct / (sqrt(userMagnitude) * sqrt(itemMagnitude));
+    }
   }
 }
