@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/user_form_model.dart';
 import '../services/firebase_database/firebase_service.dart';
+import '../services/recomandation_algorithm/recommendation_service.dart';
 
 class UserFormView extends StatefulWidget {
   @override
@@ -74,6 +75,77 @@ class _UserFormViewState extends State<UserFormView> {
   }
 
   Widget _buildCategoryContent() {
+    print("DUPA");
+    // Definicja preferencji użytkownika
+    final userPreferences = {
+      'acceptsCashOnly': true,
+      'acceptsCreditCards': false,
+      'acceptsDebitCards': false,
+      'acceptsNfc': false,
+      'allowsDogs': false,
+      'freeParkingLot': false,
+      'goodForChildren': true,
+      'menuForChildren': false,
+      'paidParkingLot': false,
+      'servesVegetarianFood': false,
+      'wheelchairAccessibleEntrance': false,
+      'wheelchairAccessibleParking': false,
+      'wheelchairAccessibleRestroom': false,
+    };
+
+    // Lista przykładów rekordów
+    final items = [
+      {
+        'name': 'Restaurant A',
+        'acceptsCashOnly': false,
+        'acceptsCreditCards': true,
+        'acceptsDebitCards': true,
+        'acceptsNfc': true,
+        'allowsDogs': true,
+        'freeParkingLot': false,
+        'goodForChildren': true,
+        'menuForChildren': true,
+        'paidParkingLot': false,
+        'servesVegetarianFood': true,
+        'wheelchairAccessibleEntrance': true,
+        'wheelchairAccessibleParking': true,
+        'wheelchairAccessibleRestroom': true,
+      },
+      {
+        'name': 'Restaurant B',
+        'acceptsCashOnly': true,
+        'acceptsCreditCards': true,
+        'acceptsDebitCards': false,
+        'acceptsNfc': true,
+        'allowsDogs': true,
+        'freeParkingLot': true,
+        'goodForChildren': true,
+        'menuForChildren': false,
+        'paidParkingLot': false,
+        'servesVegetarianFood': false,
+        'wheelchairAccessibleEntrance': false,
+        'wheelchairAccessibleParking': false,
+        'wheelchairAccessibleRestroom': false,
+      },
+      // Dodaj więcej przykładów
+    ];
+
+    // Tworzenie instancji serwisu rekomendacji
+    final recommendationService = RecommendationService(userPreferences: userPreferences);
+
+    // Pobieranie rekomendacji z dodatkowymi kryteriami
+    final recommendedItems = recommendationService.getRecommendations(
+      items,
+      additionalCriteria: {
+        'servesVegetarianFood': true,
+        'freeParkingLot': true,
+      },
+    );
+
+    // Wyświetlenie posortowanej listy
+    for (var item in recommendedItems) {
+      print(item['name']);
+    }
     switch (_currentPageIndex) {
       case 0:
         return Column(
