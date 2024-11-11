@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:proj_inz/services/recomandation_algorithm/recommendation_service.dart'; // Serwis rekomendacji
 import '../services/google_api/google_api_service.dart';
 import 'restaurant_detail_screen.dart';
+import '../../models/user_form_model.dart';
 
 class RestaurantScreen extends StatefulWidget {
   @override
@@ -9,36 +13,115 @@ class RestaurantScreen extends StatefulWidget {
 }
 
 class _RestaurantScreenState extends State<RestaurantScreen> {
-  final RestaurantService _restaurantService = RestaurantService();
-  List<dynamic> _restaurants = [];
+  final FirebaseDatabase _database = FirebaseDatabase.instance;
+  final RestaurantService _restaurantService = RestaurantService(); // Serwis do restauracji
+  List<Map<String, dynamic>> _restaurants = []; // Lista restauracji
+  List<Map<String, dynamic>> _recommendedRestaurants = []; // Posortowane restauracje
   bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    _loadRestaurants();
+    _loadData();
   }
 
-  Future<void> _loadRestaurants() async {
+  Future<void> _loadData() async {
     setState(() {
       _isLoading = true;
     });
 
     try {
-      Position position = await _determinePosition();
-      final latitude = position.latitude;
-      final longitude = position.longitude;
+      String? uid = await getUserUID();
+      if (uid != null) {
+        UserFormModel? userForm = await getUserFormByUID(uid);
+        if (userForm != null) {
+          Map<String, bool> userPreferences = {
+            'servesVegetarianFood': userForm.servesVegetarianFood,
+            'menuForChildren': userForm.menuForChildren,
+            'goodForChildren': userForm.goodForChildren,
+            'allowsDogs': userForm.allowsDogs,
+            'acceptsCreditCards': userForm.acceptsCreditCards,
+            'acceptsDebitCards': userForm.acceptsDebitCards,
+            'acceptsCashOnly': userForm.acceptsCashOnly,
+            'acceptsNfc': userForm.acceptsNfc,
+            'freeParkingLot': userForm.freeParkingLot,
+            'paidParkingLot': userForm.paidParkingLot,
+            'wheelchairAccessibleParking': userForm.wheelchairAccessibleParking,
+            'wheelchairAccessibleEntrance': userForm.wheelchairAccessibleEntrance,
+            'wheelchairAccessibleRestroom': userForm.wheelchairAccessibleRestroom,
+          };
 
-      final List<dynamic> response = await _restaurantService.fetchNearbyRestaurants(latitude, longitude);
-      setState(() {
-        _restaurants = response;
-      });
+          Position position = await _determinePosition();
+          final latitude = position.latitude;
+          final longitude = position.longitude;
+          final List<dynamic> response = await _restaurantService.fetchNearbyRestaurants(latitude, longitude);
+
+          List<Map<String, dynamic>> restaurantList = List<Map<String, dynamic>>.from(response);
+
+          RecommendationService recommendationService = RecommendationService(
+            userPreferences: userPreferences,
+            preferenceWeights: {
+              'servesVegetarianFood': 2,
+              'menuForChildren': 1,
+              'goodForChildren': 1,
+              'allowsDogs': 1,
+              'acceptsCreditCards': 1,
+              'acceptsDebitCards': 1,
+              'acceptsCashOnly': 1,
+              'acceptsNfc': 1,
+              'freeParkingLot': 1,
+              'paidParkingLot': 1,
+              'wheelchairAccessibleParking': 1,
+              'wheelchairAccessibleEntrance': 1,
+              'wheelchairAccessibleRestroom': 1,
+            },
+          );
+
+          List<Map<String, dynamic>> recommendedList = recommendationService.getRecommendations(restaurantList);
+
+          if (recommendedList.isNotEmpty) {
+            setState(() {
+              _restaurants = recommendedList;
+            });
+          } else {
+            setState(() {
+              _restaurants = restaurantList;
+            });
+          }
+        }
+      }
     } catch (e) {
-      print(e);
+      print('Error: $e');
     } finally {
       setState(() {
         _isLoading = false;
       });
+    }
+  }
+
+
+  Future<String?> getUserUID() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      return user.uid;
+    } else {
+      return null;
+    }
+  }
+
+  Future<UserFormModel?> getUserFormByUID(String uid) async {
+    try {
+      DatabaseReference ref = _database.ref('user_forms/$uid');
+      DataSnapshot snapshot = await ref.get();
+      if (snapshot.exists) {
+        Map<String, dynamic> data = Map<String, dynamic>.from(snapshot.value as Map);
+        return UserFormModel.fromMap(data);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+      return null;
     }
   }
 

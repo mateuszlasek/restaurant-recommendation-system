@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:proj_inz/views/restaurant_view.dart';
 import '../models/user_form_model.dart';
 import '../services/firebase_database/firebase_service.dart';
 import '../services/recomandation_algorithm/recommendation_service.dart';
@@ -10,7 +11,7 @@ class UserFormView extends StatefulWidget {
 
 class _UserFormViewState extends State<UserFormView> {
   final FirebaseService _firebaseService = FirebaseService(
-    databaseURL: 'https://restaurant-recommendatio-57162-default-rtdb.europe-west1.firebasedatabase.app',
+    databaseURL: 'https://restaurant-recommendatio-57162-default-rtdb.europe-west1.firebasedatabase.app/',
   );
 
   bool _servesVegetarianFood = false;
@@ -72,26 +73,14 @@ class _UserFormViewState extends State<UserFormView> {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text('Formularz zapisany pomyślnie!'),
     ));
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => RestaurantScreen()),
+    );
   }
 
   Widget _buildCategoryContent() {
-    print("DUPA");
-    // Definicja preferencji użytkownika
-    final userPreferences = {
-      'acceptsCashOnly': false,
-      'acceptsCreditCards': true,
-      'acceptsDebitCards': true,
-      'acceptsNfc': true,
-      'allowsDogs': true,
-      'freeParkingLot': true,
-      'goodForChildren': true,
-      'menuForChildren': false,
-      'paidParkingLot': false,
-      'servesVegetarianFood': true,
-      'wheelchairAccessibleEntrance': true,
-      'wheelchairAccessibleParking': true,
-      'wheelchairAccessibleRestroom': false,
-    };
 
     // Definicja wag preferencji użytkownika
     final preferenceWeights = {
@@ -110,56 +99,6 @@ class _UserFormViewState extends State<UserFormView> {
       'wheelchairAccessibleRestroom': 2,
     };
 
-    // Lista przykładów rekordów
-    final items = [
-      {
-        'name': 'Restaurant A',
-        'acceptsCashOnly': false,
-        'acceptsCreditCards': true,
-        'acceptsDebitCards': true,
-        'acceptsNfc': true,
-        'allowsDogs': true,
-        'freeParkingLot': false,
-        'goodForChildren': true,
-        'menuForChildren': true,
-        'paidParkingLot': false,
-        'servesVegetarianFood': true,
-        'wheelchairAccessibleEntrance': true,
-        'wheelchairAccessibleParking': true,
-        'wheelchairAccessibleRestroom': true,
-      },
-      {
-        'name': 'Cafe B',
-        'acceptsCashOnly': false,
-        'acceptsCreditCards': true,
-        'acceptsDebitCards': false,
-        'acceptsNfc': true,
-        'allowsDogs': true,
-        'freeParkingLot': true,
-        'goodForChildren': true,
-        'menuForChildren': false,
-        'paidParkingLot': false,
-        'servesVegetarianFood': false,
-        'wheelchairAccessibleEntrance': false,
-        'wheelchairAccessibleParking': false,
-        'wheelchairAccessibleRestroom': false,
-      },
-      // Dodaj więcej przykładów
-    ];
-
-    // Tworzenie instancji serwisu rekomendacji
-    final recommendationService = RecommendationService(
-      userPreferences: userPreferences,
-      preferenceWeights: preferenceWeights,
-    );
-
-    // Pobieranie rekomendacji
-    final recommendedItems = recommendationService.getRecommendations(items);
-
-    // Wyświetlenie posortowanej listy
-    for (var item in recommendedItems) {
-      print(item['name']);
-    }
     switch (_currentPageIndex) {
       case 0:
         return Column(
