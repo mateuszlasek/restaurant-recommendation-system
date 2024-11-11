@@ -92,6 +92,22 @@ class _UserFormViewState extends State<UserFormView> {
       'wheelchairAccessibleParking': false,
       'wheelchairAccessibleRestroom': false,
     };
+    // Definicja wag preferencji użytkownika
+    final preferenceWeights = {
+      'acceptsCashOnly': 1,
+      'acceptsCreditCards': 5,
+      'acceptsDebitCards': 4,
+      'acceptsNfc': 3,
+      'allowsDogs': 2,
+      'freeParkingLot': 5,
+      'goodForChildren': 3,
+      'menuForChildren': 1,
+      'paidParkingLot': 2,
+      'servesVegetarianFood': 5,
+      'wheelchairAccessibleEntrance': 4,
+      'wheelchairAccessibleParking': 3,
+      'wheelchairAccessibleRestroom': 2,
+    };
 
     // Lista przykładów rekordów
     final items = [
@@ -131,7 +147,7 @@ class _UserFormViewState extends State<UserFormView> {
     ];
 
     // Tworzenie instancji serwisu rekomendacji
-    final recommendationService = RecommendationService(userPreferences: userPreferences);
+    final recommendationService = RecommendationService(userPreferences: userPreferences, preferenceWeights: preferenceWeights);
 
     // Pobieranie rekomendacji z dodatkowymi kryteriami
     final recommendedItems = recommendationService.getRecommendations(
