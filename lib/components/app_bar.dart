@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 AppBar buildAppBar() {
   return AppBar(
-    title: Text('App Name'),
+    title: Text('Projekt Inżynierski'),
     centerTitle: true,
   );
 }
