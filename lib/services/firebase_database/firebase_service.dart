@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:proj_inz/firebase_options.dart';
 
 import '../../models/user_form_model.dart';
 
@@ -8,17 +9,13 @@ class FirebaseService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseDatabase _database;
 
-  FirebaseService({required String databaseURL})
-      : _database = FirebaseDatabase.instanceFor(
-    app: Firebase.app(),
-    databaseURL: databaseURL,
-  );
+  FirebaseService() : _database = FirebaseDatabase.instance;
 
   Future<void> submitUserForm(UserFormModel userForm) async {
     try {
       String? uid = await getUserUID();
       if (uid != null) {
-        DatabaseReference ref = _database.ref('user_forms/$uid'); // Użyj UID jako klucza
+        DatabaseReference ref = _database.ref('user_forms/$uid');
         await ref.set(userForm.toMap());
         print('Data submitted successfully for user UID: $uid');
       } else {
@@ -39,7 +36,6 @@ class FirebaseService {
     }
   }
 
-  // Funkcja do pobierania danych formularza po UID
   Future<UserFormModel?> getUserFormByUID(String uid) async {
     try {
       DatabaseReference ref = _database.ref('user_forms/$uid');
@@ -57,7 +53,6 @@ class FirebaseService {
     }
   }
 
-  // Funkcja do usuwania danych formularza po UID
   Future<void> deleteUserFormByUID(String uid) async {
     try {
       DatabaseReference ref = _database.ref('user_forms/$uid');

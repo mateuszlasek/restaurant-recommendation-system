@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 class RestaurantService {
-  static const String _apiKey = 'AIzaSyDr4f6_EGr7hJsYei32vhMoJlt6gSthQdw';  // Twój klucz API
+
   static const String _baseUrl = 'https://places.googleapis.com/v1/places:searchNearby';
 
   Future<List<dynamic>> fetchNearbyRestaurants(double latitude, double longitude) async {
@@ -18,15 +19,20 @@ class RestaurantService {
             "latitude": latitude,
             "longitude": longitude
           },
-          "radius": 500.0  // Promień w metrach
+          "radius": 500.0
         }
       }
     };
 
+    final apiKey = dotenv.env['GOOGLE_API_KEY'];
+    if (apiKey == null) {
+      throw Exception('GOOGLE_API_KEY not found in .env file');
+    }
+
     // Nagłówki żądania
     final headers = {
       'Content-Type': 'application/json',
-      'X-Goog-Api-Key': _apiKey,
+      'X-Goog-Api-Key': apiKey,
       'X-Goog-FieldMask': ''
           'places.name,'
           'places.id,'

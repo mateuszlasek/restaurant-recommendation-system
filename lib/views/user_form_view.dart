@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:proj_inz/views/restaurant_view.dart';
 import '../models/user_form_model.dart';
 import '../services/firebase_database/firebase_service.dart';
-import '../services/recomandation_algorithm/recommendation_service.dart';
 
 class UserFormView extends StatefulWidget {
   @override
@@ -10,9 +9,7 @@ class UserFormView extends StatefulWidget {
 }
 
 class _UserFormViewState extends State<UserFormView> {
-  final FirebaseService _firebaseService = FirebaseService(
-    databaseURL: 'https://restaurant-recommendatio-57162-default-rtdb.europe-west1.firebasedatabase.app/',
-  );
+  final FirebaseService _firebaseService = FirebaseService();
 
   bool _servesVegetarianFood = false;
   bool _menuForChildren = false;
@@ -81,24 +78,6 @@ class _UserFormViewState extends State<UserFormView> {
   }
 
   Widget _buildCategoryContent() {
-
-    // Definicja wag preferencji użytkownika
-    final preferenceWeights = {
-      'acceptsCashOnly': 1,
-      'acceptsCreditCards': 5,
-      'acceptsDebitCards': 4,
-      'acceptsNfc': 3,
-      'allowsDogs': 2,
-      'freeParkingLot': 5,
-      'goodForChildren': 3,
-      'menuForChildren': 1,
-      'paidParkingLot': 2,
-      'servesVegetarianFood': 5,
-      'wheelchairAccessibleEntrance': 4,
-      'wheelchairAccessibleParking': 3,
-      'wheelchairAccessibleRestroom': 2,
-    };
-
     switch (_currentPageIndex) {
       case 0:
         return Column(
