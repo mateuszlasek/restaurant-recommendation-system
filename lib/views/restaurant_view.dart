@@ -16,7 +16,6 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
   final FirebaseDatabase _database = FirebaseDatabase.instance;
   final RestaurantService _restaurantService = RestaurantService(); // Serwis do restauracji
   List<Map<String, dynamic>> _restaurants = []; // Lista restauracji
-  List<Map<String, dynamic>> _recommendedRestaurants = []; // Posortowane restauracje
   bool _isLoading = false;
 
   @override

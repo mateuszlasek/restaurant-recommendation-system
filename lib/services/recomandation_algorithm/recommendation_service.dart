@@ -9,36 +9,50 @@ class RecommendationService {
     required this.preferenceWeights,
   });
 
+  double _cosineSimilarity(List<int> vecA, List<int> vecB) {
+    int dotProduct = 0;
+    int magnitudeA = 0;
+    int magnitudeB = 0;
+
+    for (int i = 0; i < vecA.length; i++) {
+      dotProduct += vecA[i] * vecB[i];
+      magnitudeA += vecA[i] * vecA[i];
+      magnitudeB += vecB[i] * vecB[i];
+    }
+
+    double magnitude = sqrt(magnitudeA.toDouble()) * sqrt(magnitudeB.toDouble());
+    return magnitude == 0 ? 0.0 : dotProduct / magnitude;
+  }
+
   List<Map<String, dynamic>> getRecommendations(List<Map<String, dynamic>> restaurants) {
     List<Map<String, dynamic>> sortedRestaurants = [];
 
+    // Tworzymy wektor preferencji użytkownika na podstawie cech
+    List<int> userVector = userPreferences.keys.map((key) {
+      return userPreferences[key]! ? preferenceWeights[key] ?? 0 : 0;
+    }).toList();
+
     for (var restaurant in restaurants) {
-      int score = 0;
+      // Tworzymy wektor cech restauracji
+      List<int> restaurantVector = userPreferences.keys.map((key) {
+        return (restaurant[key] ?? false) ? preferenceWeights[key] ?? 0 : 0;
+      }).toList();
 
-      // Sprawdzamy, które preferencje pasują do restauracji i dodajemy punkty
-      userPreferences.forEach((key, value) {
-        if (restaurant.containsKey(key)) {
-          bool restaurantFeature = restaurant[key] ?? false;
+      // Obliczamy podobieństwo cosinusowe między wektorem użytkownika a restauracji
+      double similarity = _cosineSimilarity(userVector, restaurantVector);
 
-          // Jeśli restauracja spełnia preferencję użytkownika, dodajemy odpowiednią wagę
-          if (restaurantFeature == value) {
-            score += preferenceWeights[key] ?? 0;
-          }
-        }
-      });
+      // Logowanie wyniku podobieństwa
+      print("Restaurant: ${restaurant['displayName']}, Cosine Similarity: $similarity");
 
-      // Logowanie restauracji oraz przyznanych punktów
-      print("Restaurant: ${restaurant['displayName']}, Score: $score");
-
-      // Dodajemy restaurację do listy z jej wynikiem
+      // Dodajemy restaurację do listy z wynikiem podobieństwa
       sortedRestaurants.add({
         ...restaurant,
-        'score': score,
+        'similarity': similarity,
       });
     }
 
-    // Sortowanie po wyniku
-    sortedRestaurants.sort((a, b) => b['score'].compareTo(a['score']));
+    // Sortowanie po podobieństwie cosinusowym (od najwyższego do najniższego)
+    sortedRestaurants.sort((a, b) => b['similarity'].compareTo(a['similarity']));
 
     return sortedRestaurants;
   }
