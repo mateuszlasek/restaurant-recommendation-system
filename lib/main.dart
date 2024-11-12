@@ -19,9 +19,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Nearby Restaurants',
       theme: ThemeData(
+        useMaterial3: true,
         primarySwatch: Colors.blue,
       ),
-      home: UserFormView(),
+      darkTheme: ThemeData.dark(useMaterial3: true),
+      themeMode: ThemeMode.dark,
+      home: const AuthPage(),
     );
   }
 }

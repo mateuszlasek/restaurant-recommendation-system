@@ -2,6 +2,7 @@ import "package:proj_inz/views/home_view.dart";
 import "package:proj_inz/services/auth/login_or_register.dart";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
+import "package:proj_inz/views/main_screen.dart";
 
 import "../../views/restaurant_view.dart";
 
@@ -17,7 +18,7 @@ class AuthPage extends StatelessWidget {
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return RestaurantScreen();
+          return const MainScreen();
         } else {
           return const LoginOrRegister();
         }

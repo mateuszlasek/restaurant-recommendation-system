@@ -6,7 +6,7 @@ class Place {
   final String formattedAddress;
   final List<AddressComponent> addressComponents;
   final Location location;
-  final Viewport viewport;
+  final Viewports viewport;
   final double rating;
   final String googleMapsUri;
   final RegularOpeningHours regularOpeningHours;
@@ -82,7 +82,7 @@ class Place {
           .map((item) => AddressComponent.fromJson(item))
           .toList(),
       location: Location.fromJson(json['location']),
-      viewport: Viewport.fromJson(json['viewport']),
+      viewport: Viewports.fromJson(json['viewport']),
       rating: json['rating'],
       googleMapsUri: json['googleMapsUri'],
       regularOpeningHours: RegularOpeningHours.fromJson(json['regularOpeningHours']),
@@ -153,17 +153,17 @@ class Location {
   }
 }
 
-class Viewport {
+class Viewports {
   final LatLng low;
   final LatLng high;
 
-  Viewport({
+  Viewports({
     required this.low,
     required this.high,
   });
 
-  factory Viewport.fromJson(Map<String, dynamic> json) {
-    return Viewport(
+  factory Viewports.fromJson(Map<String, dynamic> json) {
+    return Viewports(
       low: LatLng.fromJson(json['low']),
       high: LatLng.fromJson(json['high']),
     );
