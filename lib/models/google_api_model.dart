@@ -310,6 +310,7 @@ class PaymentOptions {
 
 class ParkingOptions {
   final bool paidParkingLot;
+  final bool freeParkingLot;
   final bool paidStreetParking;
   final bool valetParking;
   final bool freeStreetParking;
@@ -323,6 +324,7 @@ class ParkingOptions {
     this.freeStreetParking = false,
     this.freeGarageParking = false,
     this.paidGarageParking = false,
+    this.freeParkingLot = false
 });
 
   factory ParkingOptions.fromJson(Map<String, dynamic> json) {
