@@ -335,6 +335,7 @@ class ParkingOptions {
       freeStreetParking: json['freeStreetParking'],
       freeGarageParking: json['freeGarageParking'],
       paidGarageParking: json['paidGarageParking'],
+      freeParkingLot: json['freeParkingLot'],
     );
   }
 }
