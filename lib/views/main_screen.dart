@@ -20,14 +20,17 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _sections = [
     HomeSection(),
     SearchSection(),
-    ProfileSection(),
+    const ProfileSection(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: buildAppBar(),
-      body: _sections[_currentIndex],
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _sections,
+      ),
       bottomNavigationBar: AppNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),

@@ -102,7 +102,7 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _buildIcon(Icons.local_parking, 'Parking', widget.place.parkingOptions.paidParkingLot ? Colors.green : Colors.red),
+                  _buildIcon(Icons.local_parking, 'Parking', widget.place.parkingOptions.freeParkingLot ? Colors.green : Colors.red),
                   _buildIcon(Icons.accessible, 'Accessible', widget.place.accessibilityOptions.wheelchairAccessibleEntrance ? Colors.green : Colors.red),
                   _buildIcon(Icons.eco, 'Vegetarian', widget.place.servesLunch ? Colors.green : Colors.red),
                   _buildIcon(Icons.pets, 'Pets', widget.place.servesWine ? Colors.green : Colors.red),
