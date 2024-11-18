@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:proj_inz/components/my_textfield.dart';
 import 'package:proj_inz/components/my_button.dart';
 
@@ -37,52 +39,70 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              const Text("Login Page"),
-              const SizedBox(
-                height: 25,
-              ),
-              MyTextField(
-                  controller: emailController,
-                  hintText: "Email",
-                  obscureText: false),
-              const SizedBox(
-                height: 5,
-              ),
-              MyTextField(
-                  controller: passwordController,
-                  hintText: "Password",
-                  obscureText: true),
-              const SizedBox(
-                height: 5,
-              ),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text("Forgot Password?"),
-                ],
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              MyButton(onTap: login),
-              Row(
-                children: [
-                  const Text("Don't have an account?"),
-                  GestureDetector(
-                    onTap: widget.onTap,
-                    child: const Text(
-                      " Register here",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  )
-                ],
-              )
-            ],
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                const Text("Login Page"),
+                const SizedBox(
+                  height: 25,
+                ),
+                Container(
+                  width: 200,
+                  height: 200,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.black38,
+                  ),
+                  child: const Icon(Icons.person, size: 160, color: Colors.amber,)
+                ),
+                const SizedBox(
+                  height: 25,
+                ),
+                MyTextField(
+                    controller: emailController,
+                    hintText: "Email",
+                    obscureText: false),
+                const SizedBox(
+                  height: 5,
+                ),
+                MyTextField(
+                    controller: passwordController,
+                    hintText: "Password",
+                    obscureText: true),
+                const SizedBox(
+                  height: 5,
+                ),
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text("Forgot Password?"),
+                  ],
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                MyButton(onTap: login),
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("Don't have an account?"),
+                    GestureDetector(
+                      onTap: widget.onTap,
+                      child: const Text(
+                        " Register here",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    )
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),

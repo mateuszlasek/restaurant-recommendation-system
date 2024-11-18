@@ -4,14 +4,16 @@ class AppNavigationBar extends StatelessWidget {
   final int currentIndex;
   final Function(int) onTap;
 
-  AppNavigationBar({required this.currentIndex, required this.onTap});
+  const AppNavigationBar({super.key, required this.currentIndex, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       currentIndex: currentIndex,
       onTap: onTap,
-      items: [
+      elevation: 2,
+      backgroundColor: Colors.black12,
+      items: const [
         BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Items'),
         BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
         BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),

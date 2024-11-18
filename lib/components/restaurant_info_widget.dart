@@ -25,7 +25,7 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
         children: [
           // Main restaurant details container
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(10),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -36,21 +36,22 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
                   color: Colors.grey,
                   child: const Icon(Icons.image, size: 40),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 // Restaurant information
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.place.name,
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        widget.place.displayName.text,
+                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       Text(
                         widget.place.primaryTypeDisplayName.text,
-                        style: TextStyle(color: Colors.grey),
+                        style: const TextStyle(color: Colors.grey),
                       ),
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Icon(Icons.star, color: Colors.amber, size: 16),
                           const SizedBox(width: 4),
@@ -65,9 +66,12 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
                             ),
                           const SizedBox(width: 8),
                           const Icon(Icons.location_on, size: 16),
-                          Text(
-                            widget.place.shortFormattedAddress,
-                            style: const TextStyle(color: Colors.grey),
+                          Flexible(
+                            child: Text(
+                              widget.place.shortFormattedAddress,
+                              softWrap: true,
+                              style: const TextStyle(color: Colors.grey),
+                            ),
                           ),
                         ],
                       ),
@@ -91,18 +95,21 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
           // Options bar shown on tap
           if (showOptions)
             Container(
-              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              decoration: const BoxDecoration(
+                color: Colors.black26
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _buildIcon(Icons.local_parking, 'Parking', widget.place.parkingOptions.freeParkingLot ? Colors.green : Colors.red),
-                  _buildIcon(Icons.sports_soccer, 'Sports', widget.place.goodForWatchingSports ? Colors.green : Colors.red),
+                  _buildIcon(Icons.local_parking, 'Parking', widget.place.parkingOptions.paidParkingLot ? Colors.green : Colors.red),
                   _buildIcon(Icons.accessible, 'Accessible', widget.place.accessibilityOptions.wheelchairAccessibleEntrance ? Colors.green : Colors.red),
                   _buildIcon(Icons.eco, 'Vegetarian', widget.place.servesLunch ? Colors.green : Colors.red),
+                  _buildIcon(Icons.pets, 'Pets', widget.place.servesWine ? Colors.green : Colors.red),
                   _buildIcon(Icons.credit_card, 'Credit', widget.place.paymentOptions.acceptsCreditCards || widget.place.paymentOptions.acceptsDebitCards ? Colors.green : Colors.red),
                   _buildIcon(Icons.nfc, 'NFC', widget.place.paymentOptions.acceptsNfc ? Colors.green : Colors.red),
+                  _buildIcon(Icons.sports_soccer, 'Sports', widget.place.goodForWatchingSports ? Colors.green : Colors.red),
                   _buildIcon(Icons.takeout_dining, 'Takeout', widget.place.takeout ? Colors.green : Colors.red),
-                  _buildIcon(Icons.pets, 'Pets', widget.place.servesWine ? Colors.green : Colors.red),
                 ],
               ),
             ),
@@ -116,7 +123,7 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
     return Column(
       children: [
         Icon(icon, color: color),
-        Text(label, style: TextStyle(fontSize: 10)),
+        // Text(label, style: TextStyle(fontSize: 10)),
       ],
     );
   }

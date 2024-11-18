@@ -33,6 +33,13 @@ class Place {
   final PaymentOptions paymentOptions;
   final ParkingOptions parkingOptions;
   final AccessibilityOptions accessibilityOptions;
+  final bool curbsidePickup;
+  final bool servesVegetarianFood;
+  final bool menuForChildren;
+  final bool servesCocktails;
+  final bool goodForChildren;
+  final bool allowsDogs;
+  final String websiteUri;
 
   Place({
     required this.name,
@@ -51,64 +58,94 @@ class Place {
     required this.userRatingCount,
     required this.displayName,
     required this.primaryTypeDisplayName,
-    required this.takeout,
-    required this.delivery,
-    required this.dineIn,
-    required this.servesLunch,
-    required this.servesDinner,
-    required this.servesBeer,
-    required this.servesWine,
     required this.primaryType,
     required this.shortFormattedAddress,
-    required this.outdoorSeating,
-    required this.liveMusic,
-    required this.servesDessert,
-    required this.servesCoffee,
-    required this.restroom,
-    required this.goodForWatchingSports,
     required this.paymentOptions,
     required this.parkingOptions,
     required this.accessibilityOptions,
+    required this.websiteUri,
+    this.curbsidePickup = false,
+    this.servesVegetarianFood = false,
+    this.menuForChildren = false,
+    this.servesCocktails = false,
+    this.goodForChildren = false,
+    this.allowsDogs = false,
+    this.takeout = false,
+    this.delivery = false,
+    this.dineIn = false,
+    this.servesLunch = false,
+    this.servesDinner = false,
+    this.servesBeer = false,
+    this.servesWine = false,
+    this.outdoorSeating = false,
+    this.liveMusic = false,
+    this.servesDessert = false,
+    this.servesCoffee = false,
+    this.restroom = false,
+    this.goodForWatchingSports = false,
   });
 
   factory Place.fromJson(Map<String, dynamic> json) {
     return Place(
-      name: json['name'],
-      id: json['id'],
-      types: List<String>.from(json['types']),
-      internationalPhoneNumber: json['internationalPhoneNumber'],
-      formattedAddress: json['formattedAddress'],
-      addressComponents: (json['addressComponents'] as List)
-          .map((item) => AddressComponent.fromJson(item))
-          .toList(),
-      location: Location.fromJson(json['location']),
-      viewport: Viewports.fromJson(json['viewport']),
-      rating: json['rating'],
-      googleMapsUri: json['googleMapsUri'],
-      regularOpeningHours: RegularOpeningHours.fromJson(json['regularOpeningHours']),
-      businessStatus: json['businessStatus'],
-      priceLevel: json['priceLevel'],
-      userRatingCount: json['userRatingCount'],
-      displayName: DisplayName.fromJson(json['displayName']),
-      primaryTypeDisplayName: DisplayName.fromJson(json['primaryTypeDisplayName']),
-      takeout: json['takeout'],
-      delivery: json['delivery'],
-      dineIn: json['dineIn'],
-      servesLunch: json['servesLunch'],
-      servesDinner: json['servesDinner'],
-      servesBeer: json['servesBeer'],
-      servesWine: json['servesWine'],
-      primaryType: json['primaryType'],
-      shortFormattedAddress: json['shortFormattedAddress'],
-      outdoorSeating: json['outdoorSeating'],
-      liveMusic: json['liveMusic'],
-      servesDessert: json['servesDessert'],
-      servesCoffee: json['servesCoffee'],
-      restroom: json['restroom'],
-      goodForWatchingSports: json['goodForWatchingSports'],
-      paymentOptions: PaymentOptions.fromJson(json['paymentOptions']),
-      parkingOptions: ParkingOptions.fromJson(json['parkingOptions']),
-      accessibilityOptions: AccessibilityOptions.fromJson(json['accessibilityOptions']),
+      name: json['name'] ?? "",
+      id: json['id'] ?? "",
+      types: json['types'] != null ? List<String>.from(json['types']) : [],
+      internationalPhoneNumber: json['internationalPhoneNumber'] ?? "",
+      formattedAddress: json['formattedAddress'] ?? "",
+      addressComponents: (json['addressComponents'] as List?)
+          ?.map((item) => AddressComponent.fromJson(item))
+          .toList() ?? [],
+      location: json['location'] != null
+          ? Location.fromJson(json['location'])
+          : Location(latitude: 0, longitude: 0),
+      viewport: json['viewport'] != null
+          ? Viewports.fromJson(json['viewport'])
+          : Viewports(low: LatLng(latitude: 0, longitude: 0), high: LatLng(latitude: 0, longitude: 0)),
+      rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
+      googleMapsUri: json['googleMapsUri'] ?? "",
+      regularOpeningHours: json['regularOpeningHours'] != null
+          ? RegularOpeningHours.fromJson(json['regularOpeningHours'])
+          : RegularOpeningHours(openNow: false, periods: [], weekdayDescriptions: [], nextOpenTime: ""),
+      businessStatus: json['businessStatus'] ?? "",
+      priceLevel: json['priceLevel'] ?? "",
+      userRatingCount: json['userRatingCount'] ?? 0,
+      displayName: json['displayName'] != null
+          ? DisplayName.fromJson(json['displayName'])
+          : DisplayName(text: "", languageCode: ""),
+      primaryTypeDisplayName: json['primaryTypeDisplayName'] != null
+          ? DisplayName.fromJson(json['primaryTypeDisplayName'])
+          : DisplayName(text: "", languageCode: ""),
+      takeout: json['takeout'] ?? false,
+      delivery: json['delivery'] ?? false,
+      dineIn: json['dineIn'] ?? false,
+      servesLunch: json['servesLunch'] ?? false,
+      servesDinner: json['servesDinner'] ?? false,
+      servesBeer: json['servesBeer'] ?? false,
+      servesWine: json['servesWine'] ?? false,
+      primaryType: json['primaryType'] ?? "",
+      shortFormattedAddress: json['shortFormattedAddress'] ?? "",
+      outdoorSeating: json['outdoorSeating'] ?? false,
+      liveMusic: json['liveMusic'] ?? false,
+      servesDessert: json['servesDessert'] ?? false,
+      servesCoffee: json['servesCoffee'] ?? false,
+      restroom: json['restroom'] ?? false,
+      goodForWatchingSports: json['goodForWatchingSports'] ?? false,
+      paymentOptions: json['paymentOptions'] != null
+          ? PaymentOptions.fromJson(json['paymentOptions'])
+          : PaymentOptions(),
+      parkingOptions: json['parkingOptions'] != null
+          ? ParkingOptions.fromJson(json['parkingOptions'])
+          : ParkingOptions(),
+      accessibilityOptions: json['accessibilityOptions'] != null
+          ? AccessibilityOptions.fromJson(json['accessibilityOptions'])
+          : AccessibilityOptions(),
+      curbsidePickup: json['curbsidePickup'] ?? false,
+      servesVegetarianFood: json['servesVegetarianFood'] ?? false,
+      menuForChildren: json['menuForChildren'] ?? false,
+      servesCocktails: json['servesCocktails'] ?? false,
+      goodForChildren: json['goodForChildren'] ?? false,
+      allowsDogs: json['allowsDogs'] ?? false,
+      websiteUri: json['websiteUri'] ?? "",
     );
   }
 }
@@ -128,10 +165,10 @@ class AddressComponent {
 
   factory AddressComponent.fromJson(Map<String, dynamic> json) {
     return AddressComponent(
-      longText: json['longText'],
-      shortText: json['shortText'],
+      longText: json['longText'] ?? "",
+      shortText: json['shortText'] ?? "",
       types: List<String>.from(json['types']),
-      languageCode: json['languageCode'],
+      languageCode: json['languageCode'] ?? "",
     );
   }
 }
@@ -147,8 +184,8 @@ class Location {
 
   factory Location.fromJson(Map<String, dynamic> json) {
     return Location(
-      latitude: json['latitude'],
-      longitude: json['longitude'],
+      latitude: json['latitude'] ?? 0,
+      longitude: json['longitude'] ?? 0,
     );
   }
 }
@@ -181,8 +218,8 @@ class LatLng {
 
   factory LatLng.fromJson(Map<String, dynamic> json) {
     return LatLng(
-      latitude: json['latitude'],
-      longitude: json['longitude'],
+      latitude: json['latitude'] ?? 0,
+      longitude: json['longitude'] ?? 0,
     );
   }
 }
@@ -191,18 +228,21 @@ class RegularOpeningHours {
   final bool openNow;
   final List<Period> periods;
   final List<String> weekdayDescriptions;
+  final String nextOpenTime;
 
   RegularOpeningHours({
     required this.openNow,
     required this.periods,
     required this.weekdayDescriptions,
+    required this.nextOpenTime,
   });
 
   factory RegularOpeningHours.fromJson(Map<String, dynamic> json) {
     return RegularOpeningHours(
-      openNow: json['openNow'],
+      openNow: json['openNow'] ?? false,
       periods: (json['periods'] as List).map((item) => Period.fromJson(item)).toList(),
-      weekdayDescriptions: List<String>.from(json['weekdayDescriptions']),
+      weekdayDescriptions: List<String>.from(json['weekdayDescriptions'] ?? ""),
+      nextOpenTime: json["nextOpenTime"] ?? ""
     );
   }
 }
@@ -237,9 +277,9 @@ class Time {
 
   factory Time.fromJson(Map<String, dynamic> json) {
     return Time(
-      day: json['day'],
-      hour: json['hour'],
-      minute: json['minute'],
+      day: json['day'] ?? 0,
+      hour: json['hour'] ?? 0,
+      minute: json['minute'] ?? 0,
     );
   }
 }
@@ -255,8 +295,8 @@ class DisplayName {
 
   factory DisplayName.fromJson(Map<String, dynamic> json) {
     return DisplayName(
-      text: json['text'],
-      languageCode: json['languageCode'],
+      text: json['text'] ?? "",
+      languageCode: json['languageCode'] ?? "",
     );
   }
 }
@@ -268,30 +308,47 @@ class PaymentOptions {
   final bool acceptsNfc;
 
   PaymentOptions({
-    required this.acceptsCreditCards,
-    required this.acceptsDebitCards,
-    required this.acceptsCashOnly,
-    required this.acceptsNfc,
+    this.acceptsCreditCards = false,
+    this.acceptsDebitCards = false,
+    this.acceptsCashOnly = false,
+    this.acceptsNfc = false,
   });
 
   factory PaymentOptions.fromJson(Map<String, dynamic> json) {
     return PaymentOptions(
-      acceptsCreditCards: json['acceptsCreditCards'],
-      acceptsDebitCards: json['acceptsDebitCards'],
-      acceptsCashOnly: json['acceptsCashOnly'],
-      acceptsNfc: json['acceptsNfc'],
+      acceptsCreditCards: json['acceptsCreditCards'] ?? false,
+      acceptsDebitCards: json['acceptsDebitCards'] ?? false,
+      acceptsCashOnly: json['acceptsCashOnly'] ?? false,
+      acceptsNfc: json['acceptsNfc'] ?? false,
     );
   }
 }
 
 class ParkingOptions {
-  final bool freeParkingLot;
+  final bool paidParkingLot;
+  final bool paidStreetParking;
+  final bool valetParking;
+  final bool freeStreetParking;
+  final bool freeGarageParking;
+  final bool paidGarageParking;
 
-  ParkingOptions({required this.freeParkingLot});
+  ParkingOptions({
+    this.paidParkingLot = false,
+    this.paidStreetParking = false,
+    this.valetParking = false,
+    this.freeStreetParking = false,
+    this.freeGarageParking = false,
+    this.paidGarageParking = false,
+});
 
   factory ParkingOptions.fromJson(Map<String, dynamic> json) {
     return ParkingOptions(
-      freeParkingLot: json['freeParkingLot'],
+      paidParkingLot: json['paidParkingLot'] ?? false,
+      paidStreetParking: json['paidStreetParking'] ?? false,
+      valetParking: json['valetParking'] ?? false,
+      freeStreetParking: json['freeStreetParking'] ?? false,
+      freeGarageParking: json['freeGarageParking'] ?? false,
+      paidGarageParking: json['paidGarageParking'] ?? false,
     );
   }
 }
@@ -299,16 +356,22 @@ class ParkingOptions {
 class AccessibilityOptions {
   final bool wheelchairAccessibleEntrance;
   final bool wheelchairAccessibleSeating;
+  final bool wheelchairAccessibleRestroom;
+  final bool wheelchairAccessibleParking;
 
   AccessibilityOptions({
-    required this.wheelchairAccessibleEntrance,
-    required this.wheelchairAccessibleSeating,
+    this.wheelchairAccessibleEntrance = false,
+    this.wheelchairAccessibleSeating = false,
+    this.wheelchairAccessibleRestroom = false,
+    this.wheelchairAccessibleParking = false,
   });
 
   factory AccessibilityOptions.fromJson(Map<String, dynamic> json) {
     return AccessibilityOptions(
-      wheelchairAccessibleEntrance: json['wheelchairAccessibleEntrance'],
-      wheelchairAccessibleSeating: json['wheelchairAccessibleSeating'],
+      wheelchairAccessibleEntrance: json['wheelchairAccessibleEntrance'] ?? false,
+      wheelchairAccessibleSeating: json['wheelchairAccessibleSeating'] ?? false,
+      wheelchairAccessibleRestroom: json['wheelchairAccessibleRestroom'] ?? false,
+      wheelchairAccessibleParking: json['wheelchairAccessibleParking'] ?? false,
     );
   }
 }

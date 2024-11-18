@@ -2,55 +2,72 @@ import 'package:flutter/material.dart';
 import 'package:proj_inz/components/restaurant_info_widget.dart';
 import 'package:proj_inz/models/google_api_model.dart';
 
-class HomeSection extends StatelessWidget {
-  final Place place1 = Place(
-      name: "Restauracja 1",
-      id: "1",
-      types: ["type1", "type2"],
-      internationalPhoneNumber: "555",
-      formattedAddress: "ul. marchew",
-      addressComponents: [],
-      location: Location(latitude: 5, longitude: 5),
-      viewport: Viewports(low: LatLng(latitude: 5, longitude: 5), high: LatLng(latitude: 5, longitude: 5)),
-      rating: 4.5,
-      googleMapsUri: "a",
-      regularOpeningHours: RegularOpeningHours(openNow: true, periods: [Period(open: Time(day: 5, hour: 4, minute: 3), close: Time(day: 6, hour: 5, minute: 5),)], weekdayDescriptions: ["m"]),
-      businessStatus: "a",
-      priceLevel: "2",
-      userRatingCount: 15,
-      displayName: DisplayName(text: "marchew", languageCode: "pl"),
-      primaryTypeDisplayName: DisplayName(text: "Pizzeria", languageCode: "pl"),
-      takeout: true,
-      delivery: true,
-      dineIn: true,
-      servesLunch: true,
-      servesDinner: true,
-      servesBeer: true,
-      servesWine: true,
-      primaryType: "Pizzeria",
-      shortFormattedAddress: "ul. Krowoderskich Zuchów 25/25",
-      outdoorSeating: false,
-      liveMusic: false,
-      servesDessert: false,
-      servesCoffee: false,
-      restroom: false,
-      goodForWatchingSports: false,
-      paymentOptions: PaymentOptions(acceptsCreditCards: true, acceptsDebitCards: true, acceptsCashOnly: true, acceptsNfc: false),
-      parkingOptions: ParkingOptions(freeParkingLot: false),
-      accessibilityOptions: AccessibilityOptions(wheelchairAccessibleEntrance: true, wheelchairAccessibleSeating: true));
+import '../services/restaurant/restaurant_data_service.dart';
+
+class HomeSection extends StatefulWidget {
+
 
   HomeSection({super.key});
 
   @override
+  State<HomeSection> createState() => _HomeSectionState();
+}
+
+class _HomeSectionState extends State<HomeSection> {
+  final RestaurantDataService _dataService = RestaurantDataService();
+  List<Place> recommendedRestaurants = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchRecommendations();
+  }
+
+  Future<void> _fetchRecommendations() async {
+    try {
+      List<Map<String, dynamic>> restaurantData = await _dataService.fetchRecommendedRestaurants();
+      setState(() {
+        recommendedRestaurants = restaurantData.map((data) => Place.fromJson(data)).toList();
+        isLoading = false;
+      });
+    } catch (e) {
+      print('Error fetching recommendations: $e');
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Center(
-        child: Column(
+        child: isLoading
+            ? const CircularProgressIndicator(color: Colors.amber,)
+            : Column(
           children: [
-            RestaurantWidget(place: place1),
-            RestaurantWidget(place: place1),
-            RestaurantWidget(place: place1),
+            Expanded(
+              child: ListView.builder(
+                itemCount: recommendedRestaurants.length,
+                itemBuilder: (context, index) {
+                  final place = recommendedRestaurants[index];
+                  return Column(
+                    children: [
+                      RestaurantWidget(place: place),
+                      const Divider(
+                        height: 0,
+                        thickness: 1,
+                        color: Colors.amber,
+                        indent: 10,
+                        endIndent: 10,
+                      )
+                    ],
+                  );
+                },
+              ),
+            ),
           ],
-        )
+        ),
     );
   }
 }
