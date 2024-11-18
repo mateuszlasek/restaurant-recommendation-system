@@ -5,8 +5,6 @@ import 'package:proj_inz/models/google_api_model.dart';
 import '../services/restaurant/restaurant_data_service.dart';
 
 class HomeSection extends StatefulWidget {
-
-
   HomeSection({super.key});
 
   @override
@@ -26,9 +24,11 @@ class _HomeSectionState extends State<HomeSection> {
 
   Future<void> _fetchRecommendations() async {
     try {
-      List<Map<String, dynamic>> restaurantData = await _dataService.fetchRecommendedRestaurants();
+      List<Map<String, dynamic>> restaurantData =
+          await _dataService.fetchRecommendedRestaurants();
       setState(() {
-        recommendedRestaurants = restaurantData.map((data) => Place.fromJson(data)).toList();
+        recommendedRestaurants =
+            restaurantData.map((data) => Place.fromJson(data)).toList();
         isLoading = false;
       });
     } catch (e) {
@@ -43,31 +43,36 @@ class _HomeSectionState extends State<HomeSection> {
   Widget build(BuildContext context) {
     return Center(
         child: isLoading
-            ? const CircularProgressIndicator(color: Colors.amber,)
-            : Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: recommendedRestaurants.length,
-                itemBuilder: (context, index) {
-                  final place = recommendedRestaurants[index];
-                  return Column(
-                    children: [
-                      RestaurantWidget(place: place),
-                      const Divider(
-                        height: 0,
-                        thickness: 1,
-                        color: Colors.amber,
-                        indent: 10,
-                        endIndent: 10,
-                      )
-                    ],
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-    );
+            ? const CircularProgressIndicator(
+                color: Colors.amber,
+              )
+            : RefreshIndicator(
+                onRefresh: _fetchRecommendations,
+                color: Colors.amber,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: recommendedRestaurants.length,
+                        itemBuilder: (context, index) {
+                          final place = recommendedRestaurants[index];
+                          return Column(
+                            children: [
+                              RestaurantWidget(place: place),
+                              const Divider(
+                                height: 0,
+                                thickness: 1,
+                                color: Colors.amber,
+                                indent: 10,
+                                endIndent: 10,
+                              )
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ));
   }
 }
