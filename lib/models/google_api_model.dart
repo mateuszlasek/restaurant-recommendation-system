@@ -167,7 +167,7 @@ class AddressComponent {
     return AddressComponent(
       longText: json['longText'] ?? "",
       shortText: json['shortText'] ?? "",
-      types: List<String>.from(json['types']),
+      types: List<String>.from(json['types'] ?? ""),
       languageCode: json['languageCode'] ?? "",
     );
   }
