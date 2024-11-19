@@ -80,7 +80,7 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
                 ),
                 Column(
                   children: [
-                    IconButton(onPressed: () {}, icon: const Icon(Icons.map, size: 24)),
+                    IconButton(onPressed: () {}, icon: const Icon(Icons.map, size: 24)), // wyświetlanie lokalizacji restauracji
                     const Text(
                       '500m', // Update with real distance if available
                       style: TextStyle(color: Colors.grey),

@@ -6,6 +6,9 @@ AppBar buildAppBar() {
       'Projekt Inżynierski',
       style: TextStyle(color: Colors.amber, fontFamily: "Comic Sans"),
     ),
+    actions: [
+      IconButton(onPressed: () {}, icon: const Icon(Icons.location_on_outlined)) // wybieranie "lokalizacji" telefonu
+    ],
     shadowColor: Colors.black12,
     surfaceTintColor: Colors.black12,
     backgroundColor: Colors.black12,
