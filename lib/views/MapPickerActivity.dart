@@ -2,88 +2,80 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapPickerActivity extends StatefulWidget {
+  final double lat;
+  final double lng;
+
+  // Konstruktor przyjmujący współrzędne startowe
+  const MapPickerActivity({
+    Key? key,
+    required this.lat,
+    required this.lng,
+  }) : super(key: key);
+
   @override
-  _MapPickerActivityState createState() => _MapPickerActivityState();
+  State<MapPickerActivity> createState() => _MapActivityState();
 }
 
-class _MapPickerActivityState extends State<MapPickerActivity> {
-  // Kontroler mapy Google
+class _MapActivityState extends State<MapPickerActivity> {
   late GoogleMapController _mapController;
 
-  // Współrzędne wybranej pozycji
+  // Aktualnie wybrana pozycja pinezki
   LatLng? _selectedPosition;
 
-  // Początkowe położenie mapy (przykład: Warszawa)
-  final LatLng _initialPosition = LatLng(52.2297, 21.0122);
+  @override
+  void initState() {
+    super.initState();
+    _selectedPosition = LatLng(widget.lat, widget.lng); // Ustawienie domyślnej pozycji
+  }
 
   @override
   Widget build(BuildContext context) {
+    // Początkowa lokalizacja kamery
+    final CameraPosition initialCameraPosition = CameraPosition(
+      target: LatLng(widget.lat, widget.lng),
+      zoom: 14.0,
+    );
+
     return Scaffold(
       appBar: AppBar(
-        title: Text("Pick a Location"),
-      ),
-      body: Stack(
-        children: [
-          GoogleMap(
-            initialCameraPosition: CameraPosition(
-              target: _initialPosition,
-              zoom: 12,
-            ),
-            onMapCreated: (GoogleMapController controller) {
-              _mapController = controller;
+        title: const Text('Select Location'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.check),
+            onPressed: () {
+              // Zwraca wybraną pozycję do poprzedniego ekranu
+              if (_selectedPosition != null) {
+                Navigator.pop(context, _selectedPosition);
+              }
             },
-            onTap: (LatLng position) {
+          ),
+        ],
+      ),
+      body: GoogleMap(
+        initialCameraPosition: initialCameraPosition,
+        onMapCreated: (controller) {
+          _mapController = controller;
+        },
+        markers: _selectedPosition != null
+            ? {
+          Marker(
+            markerId: const MarkerId('selected_position'),
+            position: _selectedPosition!,
+            draggable: true,
+            onDragEnd: (newPosition) {
               setState(() {
-                _selectedPosition = position;
+                _selectedPosition = newPosition;
               });
             },
-            markers: _selectedPosition != null
-                ? {
-              Marker(
-                markerId: MarkerId("selected_location"),
-                position: _selectedPosition!,
-              ),
-            }
-                : {},
           ),
-          if (_selectedPosition != null)
-            Positioned(
-              bottom: 20,
-              left: 20,
-              right: 20,
-              child: Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        "Selected Location:",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        "Latitude: ${_selectedPosition!.latitude}, "
-                            "Longitude: ${_selectedPosition!.longitude}",
-                      ),
-                      SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: () {
-                          // Zapisz współrzędne lub prześlij dalej
-                          Navigator.pop(context, _selectedPosition);
-                        },
-                        child: Text("Confirm Location"),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-        ],
+        }
+            : {},
+        onTap: (position) {
+          setState(() {
+            _selectedPosition = position;
+          });
+        },
+        mapType: MapType.normal,
       ),
     );
   }
