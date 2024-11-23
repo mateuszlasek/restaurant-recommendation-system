@@ -43,6 +43,8 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
 
+  shared_preferences: ^2.0.15 # zapisywanie lokalizacji wybranej z mapy
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

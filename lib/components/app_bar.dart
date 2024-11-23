@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:proj_inz/views/MapPickerActivity.dart';
+import 'package:proj_inz/views/map_picker_activity.dart';
 
 AppBar buildAppBar(BuildContext context) {
   return AppBar(
