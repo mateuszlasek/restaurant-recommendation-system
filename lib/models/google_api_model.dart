@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 class Place {
   final String name;
   final String id;
@@ -86,6 +88,7 @@ class Place {
   });
 
   factory Place.fromJson(Map<String, dynamic> json) {
+    log("json ${json}");
     return Place(
       name: json['name'] ?? "",
       id: json['id'] ?? "",
@@ -167,7 +170,7 @@ class AddressComponent {
     return AddressComponent(
       longText: json['longText'] ?? "",
       shortText: json['shortText'] ?? "",
-      types: List<String>.from(json['types']),
+      types: List<String>.from(json['types'] ?? []),
       languageCode: json['languageCode'] ?? "",
     );
   }

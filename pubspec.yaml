@@ -33,6 +33,7 @@ dependencies:
   http: ^1.2.2
   geolocator: ^9.0.0 # lokalizacja
   flutter_dotenv: ^5.0.2 #do .env
+  google_maps_flutter: ^2.2.3
 
   firebase_core: ^3.4.0
   firebase_auth: ^5.1.0

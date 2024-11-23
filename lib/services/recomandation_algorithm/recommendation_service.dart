@@ -42,6 +42,7 @@ class RecommendationService {
       double similarity = _cosineSimilarity(userVector, restaurantVector);
 
       // Logowanie wyniku podobieństwa
+      //
       print("Restaurant: ${restaurant['displayName']}, Cosine Similarity: $similarity");
 
       // Dodajemy restaurację do listy z wynikiem podobieństwa
