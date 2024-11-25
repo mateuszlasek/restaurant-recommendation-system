@@ -49,7 +49,6 @@ class RestaurantDataService {
       'goodForChildren': userForm.goodForChildren,
       'allowsDogs': userForm.allowsDogs,
 
-      // Zagnieżdżony obiekt paymentOptions
       'paymentOptions': {
         'acceptsCreditCards': userForm.acceptsCreditCards,
         'acceptsDebitCards': userForm.acceptsDebitCards,
@@ -57,13 +56,11 @@ class RestaurantDataService {
         'acceptsNfc': userForm.acceptsNfc,
       },
 
-      // Zagnieżdżony obiekt parkingOptions
       'parkingOptions': {
         'freeParkingLot': userForm.freeParkingLot,
         'paidParkingLot': userForm.paidParkingLot,
       },
 
-      // Zagnieżdżony obiekt accessibilityOptions
       'accessibilityOptions': {
         'wheelchairAccessibleParking': userForm.wheelchairAccessibleParking,
         'wheelchairAccessibleEntrance': userForm.wheelchairAccessibleEntrance,
