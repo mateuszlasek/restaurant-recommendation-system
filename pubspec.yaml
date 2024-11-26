@@ -33,6 +33,7 @@ dependencies:
   http: ^1.2.2
   geolocator: ^9.0.0 # lokalizacja
   flutter_dotenv: ^5.0.2 #do .env
+  google_maps_flutter: ^2.2.3
 
   firebase_core: ^3.4.0
   firebase_auth: ^5.1.0
@@ -41,6 +42,8 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
+
+  shared_preferences: ^2.0.15 # zapisywanie lokalizacji wybranej z mapy
 
 dev_dependencies:
   flutter_test:

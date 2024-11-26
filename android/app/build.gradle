@@ -25,6 +25,11 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+def dotenv = new Properties()
+file("../../.env").withInputStream { stream ->
+    dotenv.load(stream)
+}
+
 android {
     namespace "pl.uken.proj_inz"
     compileSdk flutter.compileSdkVersion
@@ -52,6 +57,8 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+
+        resValue "string", "GOOGLE_API_KEY", dotenv.getProperty('GOOGLE_API_KEY')
     }
 
     buildTypes {
