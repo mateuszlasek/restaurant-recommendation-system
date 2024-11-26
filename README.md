@@ -37,10 +37,11 @@ samples, guidance on mobile development, and a full API reference.
 - [x] autentykacja użytkownika i połączenie z Firebase
 - [x] model formularza
 - [x] lokalizacja
-- [ ] sam formularz (widok/UI)
-- [ ] baza danych - uzytkownik
-- [ ] algorytm
-- [ ] implementacja map google
+- [x] sam formularz (widok/UI)
+- [x] baza danych - uzytkownik
+- [x] algorytm
+- [x] implementacja map google
+- [ ] sekcja wyszukiwania
 - [ ] Lista ulubionych ( + informacje o ulubionych w bazie firebase)
 - [ ] LOGO
 - [ ] TODO todo
