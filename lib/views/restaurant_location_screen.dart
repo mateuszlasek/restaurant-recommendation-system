@@ -24,6 +24,7 @@ class RestaurantLocationScreen extends StatelessWidget {
           target: LatLng(latitude, longitude),
           zoom: 15,
         ),
+        myLocationEnabled: true,
         markers: {
           Marker(
             markerId: MarkerId(placeName),

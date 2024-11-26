@@ -170,7 +170,7 @@ class AddressComponent {
     return AddressComponent(
       longText: json['longText'] ?? "",
       shortText: json['shortText'] ?? "",
-      types: List<String>.from(json['types'] ?? ""),
+      types: List<String>.from(json['types'] ?? "") ?? [],
       languageCode: json['languageCode'] ?? "",
     );
   }
@@ -261,8 +261,8 @@ class Period {
 
   factory Period.fromJson(Map<String, dynamic> json) {
     return Period(
-      open: Time.fromJson(json['open']),
-      close: Time.fromJson(json['close']),
+      open: Time.fromJson(json['open'] ?? ""),
+      close: Time.fromJson(json['close'] ?? ""),
     );
   }
 }

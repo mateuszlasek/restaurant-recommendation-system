@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RestaurantService {
 
@@ -10,14 +11,25 @@ class RestaurantService {
   Future<List<dynamic>> fetchNearbyRestaurants(double latitude, double longitude) async {
     final url = Uri.parse(_baseUrl);
 
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? position = prefs.getStringList("Position");
+    // // double? lng = prefs.getDouble('longitude');
+    // // if (lat != null && lng != null) {
+    // //   setState(() {
+    // //     _selectedPosition = LatLng(lat, lng);
+    // //   });
+    // // }
+    // print("Lat lang");
+    // print(position);
+
     final requestBody = {
       "includedTypes": ["restaurant"],
       "maxResultCount": 10,
       "locationRestriction": {
         "circle": {
           "center": {
-            "latitude": latitude,
-            "longitude": longitude
+            "latitude": position?.first,
+            "longitude": position?.last
           },
           "radius": 500.0
         }

@@ -23,7 +23,10 @@ AppBar buildAppBar(BuildContext context) {
       ),
     ),
     actions: [
-      IconButton(onPressed: () {}, icon: const Icon(Icons.location_on_outlined, color: Colors.white,)) // wybieranie "lokalizacji" telefonu
+      IconButton(onPressed: () {
+        ///TODO
+      }
+      , icon: const Icon(Icons.location_on_outlined, color: Colors.white,)) // wybieranie "lokalizacji" telefonu
     ],
     shadowColor: Colors.black12,
     surfaceTintColor: Colors.black12,
