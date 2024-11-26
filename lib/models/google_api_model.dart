@@ -240,7 +240,7 @@ class RegularOpeningHours {
   factory RegularOpeningHours.fromJson(Map<String, dynamic> json) {
     return RegularOpeningHours(
       openNow: json['openNow'] ?? false,
-      periods: (json['periods'] as List).map((item) => Period.fromJson(item)).toList(),
+      periods: (json['periods'] as List).map((item) => Period.fromJson(item)).toList() ?? [],
       weekdayDescriptions: List<String>.from(json['weekdayDescriptions'] ?? ""),
       nextOpenTime: json["nextOpenTime"] ?? ""
     );
