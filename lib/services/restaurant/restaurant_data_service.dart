@@ -43,21 +43,31 @@ class RestaurantDataService {
     List<dynamic> response = await _restaurantService.fetchNearbyRestaurants(latitude, longitude);
     List<Map<String, dynamic>> restaurantList = List<Map<String, dynamic>>.from(response);
 
-    Map<String, bool> userPreferences = {
+    Map<String, dynamic> userPreferences = {
       'servesVegetarianFood': userForm.servesVegetarianFood,
       'menuForChildren': userForm.menuForChildren,
       'goodForChildren': userForm.goodForChildren,
       'allowsDogs': userForm.allowsDogs,
-      'acceptsCreditCards': userForm.acceptsCreditCards,
-      'acceptsDebitCards': userForm.acceptsDebitCards,
-      'acceptsCashOnly': userForm.acceptsCashOnly,
-      'acceptsNfc': userForm.acceptsNfc,
-      'freeParkingLot': userForm.freeParkingLot,
-      'paidParkingLot': userForm.paidParkingLot,
-      'wheelchairAccessibleParking': userForm.wheelchairAccessibleParking,
-      'wheelchairAccessibleEntrance': userForm.wheelchairAccessibleEntrance,
-      'wheelchairAccessibleRestroom': userForm.wheelchairAccessibleRestroom,
+
+      'paymentOptions': {
+        'acceptsCreditCards': userForm.acceptsCreditCards,
+        'acceptsDebitCards': userForm.acceptsDebitCards,
+        'acceptsCashOnly': userForm.acceptsCashOnly,
+        'acceptsNfc': userForm.acceptsNfc,
+      },
+
+      'parkingOptions': {
+        'freeParkingLot': userForm.freeParkingLot,
+        'paidParkingLot': userForm.paidParkingLot,
+      },
+
+      'accessibilityOptions': {
+        'wheelchairAccessibleParking': userForm.wheelchairAccessibleParking,
+        'wheelchairAccessibleEntrance': userForm.wheelchairAccessibleEntrance,
+        'wheelchairAccessibleRestroom': userForm.wheelchairAccessibleRestroom,
+      },
     };
+
 
     RecommendationService recommendationService = RecommendationService(
       userPreferences: userPreferences,

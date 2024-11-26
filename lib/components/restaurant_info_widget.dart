@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:proj_inz/models/google_api_model.dart';
 
+import '../views/restaurant_location_screen.dart';
+
 class RestaurantWidget extends StatefulWidget {
   final Place place;
 
@@ -80,7 +82,21 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
                 ),
                 Column(
                   children: [
-                    IconButton(onPressed: () {}, icon: const Icon(Icons.map, size: 24)), // wyświetlanie lokalizacji restauracji
+                    IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RestaurantLocationScreen(
+                              latitude: widget.place.location.latitude,
+                              longitude: widget.place.location.longitude,
+                              placeName: widget.place.displayName.text,
+                            ),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.map, size: 24),
+                    ), // wyświetlanie lokalizacji restauracji
                     const Text(
                       '500m', // Update with real distance if available
                       style: TextStyle(color: Colors.grey),
