@@ -88,7 +88,6 @@ class _SearchSectionState extends State<SearchSection> {
               itemCount: restaurants.length,
               itemBuilder: (context, index) {
                 final restaurant = restaurants[index];
-                log(restaurant.toString());
 
                 // Ensure you're accessing the correct fields in the response
                 final displayName = restaurant['displayName']?['text'] ?? 'Unknown name';
