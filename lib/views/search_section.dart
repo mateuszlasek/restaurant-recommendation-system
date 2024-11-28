@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import '../services/google_api/google_api_service.dart';
+import 'dart:developer';
 
 class SearchSection extends StatefulWidget {
   @override
@@ -15,34 +17,28 @@ class _SearchSectionState extends State<SearchSection> {
     'chinese_restaurant',
     'cafe',
     'bar'
-  ]; // Typy restauracji
+  ];
   String? selectedType;
   List<Map<String, dynamic>> restaurants = [];
   bool isLoading = false;
 
-  final apiKey = dotenv.env['GOOGLE_API_KEY'];
+  final RestaurantService _restaurantService = RestaurantService();
 
   Future<void> fetchRestaurants(String type) async {
     setState(() {
       isLoading = true;
     });
 
-    final url =
-        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=50.060562,19.937711&radius=1500&type=$type&key=$apiKey';
-
     try {
-      final response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        // Filtrowanie wyników po stronie klienta
-        setState(() {
-          restaurants = List<Map<String, dynamic>>.from(data['results'])
-              .where((place) => !_isExcluded(place))
-              .toList();
-        });
-      } else {
-        throw Exception('Failed to load restaurants');
-      }
+      // Pass only the selected type as a single value (not as a list)
+      List<dynamic> response = await _restaurantService.fetchNearbyRestaurants(50.060562, 19.937711, [type]);
+
+      setState(() {
+        // Update the state with the fetched restaurants
+        // Assuming the 'places' field in the response contains the list of restaurants
+        restaurants = List<Map<String, dynamic>>.from(response);
+      });
+
     } catch (e) {
       print('Error: $e');
     } finally {
@@ -50,16 +46,6 @@ class _SearchSectionState extends State<SearchSection> {
         isLoading = false;
       });
     }
-  }
-
-  // Funkcja sprawdzająca, czy miejsce należy do wykluczonych typów
-  bool _isExcluded(Map<String, dynamic> place) {
-    const excludedTypes = ['hotel', 'lodging']; // Typy do wykluczenia
-    if (place['types'] != null) {
-      return (place['types'] as List<dynamic>)
-          .any((type) => excludedTypes.contains(type));
-    }
-    return false;
   }
 
   @override
@@ -89,7 +75,7 @@ class _SearchSectionState extends State<SearchSection> {
               IconButton(
                 icon: Icon(Icons.search),
                 onPressed: selectedType != null
-                    ? () => fetchRestaurants(selectedType!)
+                    ? () => fetchRestaurants(selectedType!) // Pass the selected type as a single string
                     : null,
               ),
             ],
@@ -102,9 +88,15 @@ class _SearchSectionState extends State<SearchSection> {
               itemCount: restaurants.length,
               itemBuilder: (context, index) {
                 final restaurant = restaurants[index];
+                log(restaurant.toString());
+
+                // Ensure you're accessing the correct fields in the response
+                final displayName = restaurant['displayName']?['text'] ?? 'Unknown name';
+                final formattedAddress = restaurant['formattedAddress'] ?? 'No address available';
+
                 return ListTile(
-                  title: Text(restaurant['name']),
-                  subtitle: Text(restaurant['vicinity'] ?? 'No address'),
+                  title: Text(displayName), // Use the correct field for name
+                  subtitle: Text(formattedAddress), // Use the correct field for address
                 );
               },
             ),
