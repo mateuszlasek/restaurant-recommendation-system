@@ -97,10 +97,13 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
                       },
                       icon: const Icon(Icons.map, size: 24),
                     ), // wyświetlanie lokalizacji restauracji
+                    _buildPrice(widget.place.priceLevel)
+                    /*
                     const Text(
                       '500m', // Update with real distance if available
                       style: TextStyle(color: Colors.grey),
                     ),
+                     */
                   ],
                 )
                 // Distance (if available)
@@ -120,12 +123,12 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
                 children: [
                   _buildIcon(Icons.local_parking, 'Parking', widget.place.parkingOptions.freeParkingLot ? Colors.green : Colors.red),
                   _buildIcon(Icons.accessible, 'Accessible', widget.place.accessibilityOptions.wheelchairAccessibleEntrance ? Colors.green : Colors.red),
-                  _buildIcon(Icons.eco, 'Vegetarian', widget.place.servesLunch ? Colors.green : Colors.red),
-                  _buildIcon(Icons.pets, 'Pets', widget.place.servesWine ? Colors.green : Colors.red),
+                  _buildIcon(Icons.eco, 'Vegetarian', widget.place.servesLunch ? Colors.green : Colors.white10),
+                  _buildIcon(Icons.pets, 'Pets', widget.place.servesWine ? Colors.green : Colors.white10),
                   _buildIcon(Icons.credit_card, 'Credit', widget.place.paymentOptions.acceptsCreditCards || widget.place.paymentOptions.acceptsDebitCards ? Colors.green : Colors.red),
-                  _buildIcon(Icons.nfc, 'NFC', widget.place.paymentOptions.acceptsNfc ? Colors.green : Colors.red),
-                  _buildIcon(Icons.sports_soccer, 'Sports', widget.place.goodForWatchingSports ? Colors.green : Colors.red),
-                  _buildIcon(Icons.takeout_dining, 'Takeout', widget.place.takeout ? Colors.green : Colors.red),
+                  _buildIcon(Icons.nfc_rounded, 'NFC', widget.place.paymentOptions.acceptsNfc ? Colors.green : Colors.white10),
+                  _buildIcon(Icons.live_tv_outlined, 'Sports', widget.place.goodForWatchingSports ? Colors.green : Colors.white10),
+                  // _buildIcon(Icons.takeout_dining, 'Takeout', widget.place.takeout ? Colors.green : Colors.red),
                 ],
               ),
             ),
@@ -141,6 +144,43 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
         Icon(icon, color: color),
         // Text(label, style: TextStyle(fontSize: 10)),
       ],
+    );
+  }
+
+  Widget _buildPrice(String priceLevel) {
+    int level = 0;
+    switch(priceLevel){
+      case "PRICE_LEVEL_INEXPENSIVE":
+        level = 1;
+        break;
+      case "PRICE_LEVEL_MODERATE":
+        level = 2;
+        break;
+      case "PRICE_LEVEL_EXPENSIVE":
+        level = 3;
+        break;
+      case "PRICE_LEVEL_VERY_EXPENSIVE":
+        level = 4;
+        break;
+      default:
+        level = 0;
+        break;
+    }
+
+    List<Widget> dollarIcons = List.generate(
+        level,
+        (index) => const Text(
+          "\$",
+          style: TextStyle(
+            color: Colors.green,
+            fontSize: 15
+          ),
+        ),
+    );
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: dollarIcons,
     );
   }
 }
