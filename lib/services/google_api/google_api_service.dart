@@ -8,7 +8,7 @@ class RestaurantService {
 
   static const String _baseUrl = 'https://places.googleapis.com/v1/places:searchNearby';
 
-  Future<List<dynamic>> fetchNearbyRestaurants(double latitude, double longitude) async {
+  Future<List<dynamic>> fetchNearbyRestaurants(double latitude, double longitude, List<String> includedTypes) async {
     final url = Uri.parse(_baseUrl);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -23,7 +23,7 @@ class RestaurantService {
     // print(position);
 
     final requestBody = {
-      "includedTypes": ["restaurant"],
+      "includedTypes": includedTypes,
       "maxResultCount": 10,
       "locationRestriction": {
         "circle": {

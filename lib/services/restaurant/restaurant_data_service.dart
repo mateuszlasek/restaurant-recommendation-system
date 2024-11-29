@@ -40,7 +40,7 @@ class RestaurantDataService {
 
   Future<List<Map<String, dynamic>>> _getRecommendedList(
       double latitude, double longitude, UserFormModel userForm) async {
-    List<dynamic> response = await _restaurantService.fetchNearbyRestaurants(latitude, longitude);
+    List<dynamic> response = await _restaurantService.fetchNearbyRestaurants(latitude, longitude, ["restaurant"]);
     List<Map<String, dynamic>> restaurantList = List<Map<String, dynamic>>.from(response);
 
     Map<String, dynamic> userPreferences = {
