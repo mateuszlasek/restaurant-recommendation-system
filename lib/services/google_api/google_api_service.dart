@@ -24,7 +24,8 @@ class RestaurantService {
 
     final requestBody = {
       "includedTypes": includedTypes,
-      "maxResultCount": 10,
+      "excludedTypes": ["hotel", "grocery_store", "gas_station"],
+      "maxResultCount": 15,
       "locationRestriction": {
         "circle": {
           "center": {

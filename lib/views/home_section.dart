@@ -63,8 +63,8 @@ class _HomeSectionState extends State<HomeSection> {
                                 height: 0,
                                 thickness: 1,
                                 color: Colors.amber,
-                                indent: 10,
-                                endIndent: 10,
+                                indent: 0,
+                                endIndent: 0,
                               )
                             ],
                           );

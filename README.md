@@ -41,7 +41,10 @@ samples, guidance on mobile development, and a full API reference.
 - [x] baza danych - uzytkownik
 - [x] algorytm
 - [x] implementacja map google
-- [ ] sekcja wyszukiwania
+- [x] sekcja wyszukiwania
+- [ ] odświeżanie przy zmianie lokacji
+- [ ] UI sekcji wyszukiwania
 - [ ] Lista ulubionych ( + informacje o ulubionych w bazie firebase)
 - [ ] LOGO
+- [ ] Nazwa
 - [ ] TODO todo
