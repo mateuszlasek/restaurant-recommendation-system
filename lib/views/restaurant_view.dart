@@ -21,7 +21,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
   Future<void> _fetchRestaurants() async {
     setState(() => _isLoading = true);
     try {
-      _restaurants = await _restaurantDataService.fetchRecommendedRestaurants();
+      _restaurants = await _restaurantDataService.fetchRecommendedRestaurants(["restaurant"]);
     } catch (e) {
       print('Error in fetching restaurants: $e');
     } finally {

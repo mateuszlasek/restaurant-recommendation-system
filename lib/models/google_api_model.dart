@@ -87,7 +87,7 @@ class Place {
     this.goodForWatchingSports = false,
   });
 
-  factory Place.fromJson(Map<String, dynamic> json) {
+  factory Place.fromJson(Map<dynamic, dynamic> json) {
     //log("json ${json}");
     return Place(
       name: json['name'] ?? "",
@@ -166,7 +166,7 @@ class AddressComponent {
     required this.languageCode,
   });
 
-  factory AddressComponent.fromJson(Map<String, dynamic> json) {
+  factory AddressComponent.fromJson(Map<dynamic, dynamic> json) {
     return AddressComponent(
       longText: json['longText'] ?? "",
       shortText: json['shortText'] ?? "",
@@ -185,7 +185,7 @@ class Location {
     required this.longitude,
   });
 
-  factory Location.fromJson(Map<String, dynamic> json) {
+  factory Location.fromJson(Map<dynamic, dynamic> json) {
     return Location(
       latitude: json['latitude'] ?? 0,
       longitude: json['longitude'] ?? 0,
@@ -202,7 +202,7 @@ class Viewports {
     required this.high,
   });
 
-  factory Viewports.fromJson(Map<String, dynamic> json) {
+  factory Viewports.fromJson(Map<dynamic, dynamic> json) {
     return Viewports(
       low: LatLng.fromJson(json['low']),
       high: LatLng.fromJson(json['high']),
@@ -219,7 +219,7 @@ class LatLng {
     required this.longitude,
   });
 
-  factory LatLng.fromJson(Map<String, dynamic> json) {
+  factory LatLng.fromJson(Map<dynamic, dynamic> json) {
     return LatLng(
       latitude: json['latitude'] ?? 0,
       longitude: json['longitude'] ?? 0,
@@ -240,7 +240,7 @@ class RegularOpeningHours {
     required this.nextOpenTime,
   });
 
-  factory RegularOpeningHours.fromJson(Map<String, dynamic> json) {
+  factory RegularOpeningHours.fromJson(Map<dynamic, dynamic> json) {
     return RegularOpeningHours(
       openNow: json['openNow'] ?? false,
       periods: (json['periods'] as List).map((item) => Period.fromJson(item)).toList() ?? [],
@@ -259,7 +259,7 @@ class Period {
     required this.close,
   });
 
-  factory Period.fromJson(Map<String, dynamic> json) {
+  factory Period.fromJson(Map<dynamic, dynamic> json) {
     return Period(
       open: Time.fromJson(json['open'] ?? ""),
       close: Time.fromJson(json['close'] ?? ""),
@@ -278,7 +278,7 @@ class Time {
     required this.minute,
   });
 
-  factory Time.fromJson(Map<String, dynamic> json) {
+  factory Time.fromJson(Map<dynamic, dynamic> json) {
     return Time(
       day: json['day'] ?? 0,
       hour: json['hour'] ?? 0,
@@ -296,7 +296,7 @@ class DisplayName {
     required this.languageCode,
   });
 
-  factory DisplayName.fromJson(Map<String, dynamic> json) {
+  factory DisplayName.fromJson(Map<dynamic, dynamic> json) {
     return DisplayName(
       text: json['text'] ?? "",
       languageCode: json['languageCode'] ?? "",
@@ -317,7 +317,7 @@ class PaymentOptions {
     this.acceptsNfc = false,
   });
 
-  factory PaymentOptions.fromJson(Map<String, dynamic> json) {
+  factory PaymentOptions.fromJson(Map<dynamic, dynamic> json) {
     return PaymentOptions(
       acceptsCreditCards: json['acceptsCreditCards'] ?? false,
       acceptsDebitCards: json['acceptsDebitCards'] ?? false,
@@ -346,7 +346,7 @@ class ParkingOptions {
     this.freeParkingLot = false
 });
 
-  factory ParkingOptions.fromJson(Map<String, dynamic> json) {
+  factory ParkingOptions.fromJson(Map<dynamic, dynamic> json) {
     return ParkingOptions(
       paidParkingLot: json['paidParkingLot'] ?? false,
       paidStreetParking: json['paidStreetParking'] ?? false,
@@ -372,7 +372,7 @@ class AccessibilityOptions {
     this.wheelchairAccessibleParking = false,
   });
 
-  factory AccessibilityOptions.fromJson(Map<String, dynamic> json) {
+  factory AccessibilityOptions.fromJson(Map<dynamic, dynamic> json) {
     return AccessibilityOptions(
       wheelchairAccessibleEntrance: json['wheelchairAccessibleEntrance'] ?? false,
       wheelchairAccessibleSeating: json['wheelchairAccessibleSeating'] ?? false,

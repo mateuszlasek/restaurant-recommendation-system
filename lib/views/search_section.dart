@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import '../services/google_api/google_api_service.dart';
-import 'dart:developer';
+
+import '../services/restaurant/restaurant_data_service.dart';
 
 class SearchSection extends StatefulWidget {
   @override
@@ -22,7 +19,7 @@ class _SearchSectionState extends State<SearchSection> {
   List<Map<String, dynamic>> restaurants = [];
   bool isLoading = false;
 
-  final RestaurantService _restaurantService = RestaurantService();
+  final RestaurantDataService _restaurantDataService = RestaurantDataService();
 
   Future<void> fetchRestaurants(String type) async {
     setState(() {
@@ -30,17 +27,14 @@ class _SearchSectionState extends State<SearchSection> {
     });
 
     try {
-      // Pass only the selected type as a single value (not as a list)
-      List<dynamic> response = await _restaurantService.fetchNearbyRestaurants(50.060562, 19.937711, [type]);
+      // Use the RestaurantDataService to fetch recommended restaurants
+      List<Map<String, dynamic>> recommendedRestaurants = await _restaurantDataService.fetchRecommendedRestaurants([type]);
 
       setState(() {
-        // Update the state with the fetched restaurants
-        // Assuming the 'places' field in the response contains the list of restaurants
-        restaurants = List<Map<String, dynamic>>.from(response);
+        restaurants = recommendedRestaurants; // Update the state with the recommended restaurants
       });
-
     } catch (e) {
-      print('Error: $e');
+      print('Error fetching restaurants: $e');
     } finally {
       setState(() {
         isLoading = false;
@@ -57,6 +51,7 @@ class _SearchSectionState extends State<SearchSection> {
         children: [
           Row(
             children: [
+              // Dropdown menu for selecting the type of restaurant
               DropdownButton<String>(
                 hint: Text('Select Type'),
                 value: selectedType,
@@ -88,8 +83,6 @@ class _SearchSectionState extends State<SearchSection> {
               itemCount: restaurants.length,
               itemBuilder: (context, index) {
                 final restaurant = restaurants[index];
-
-                // Ensure you're accessing the correct fields in the response
                 final displayName = restaurant['displayName']?['text'] ?? 'Unknown name';
                 final formattedAddress = restaurant['formattedAddress'] ?? 'No address available';
 
