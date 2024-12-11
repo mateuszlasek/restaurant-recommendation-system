@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:proj_inz/views/user_form_view.dart';
 
+import 'favorites_screen.dart';
+
 class ProfileSection extends StatelessWidget {
   const ProfileSection({super.key});
 
@@ -33,8 +35,15 @@ class ProfileSection extends StatelessWidget {
             );
           },
               child: const Text('Formularz')),
-          ElevatedButton(onPressed: () {}, child: const Text('Button 2')),
-          ElevatedButton(onPressed: _logout, child: const Text('Logout')),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => FavoriteSection()),
+              );
+            },
+            child: const Text('Favorites'),
+          ),          ElevatedButton(onPressed: _logout, child: const Text('Logout')),
         ],
       ),
     );

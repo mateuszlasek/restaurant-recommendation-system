@@ -8,14 +8,14 @@ class RestaurantDataService {
   final FirebaseService _firebaseService = FirebaseService();
   final RestaurantService _restaurantService = RestaurantService();
 
-  Future<List<Map<String, dynamic>>> fetchRecommendedRestaurants() async {
+  Future<List<Map<String, dynamic>>> fetchRecommendedRestaurants(List<String> types) async {
     try {
       String? uid = await _firebaseService.getUserUID();
       if (uid != null) {
         UserFormModel? userForm = await _firebaseService.getUserFormByUID(uid);
         if (userForm != null) {
           Position position = await _determinePosition();
-          return await _getRecommendedList(position.latitude, position.longitude, userForm);
+          return await _getRecommendedList(position.latitude, position.longitude, userForm, types);
         }
       }
     } catch (e) {
@@ -39,8 +39,8 @@ class RestaurantDataService {
   }
 
   Future<List<Map<String, dynamic>>> _getRecommendedList(
-      double latitude, double longitude, UserFormModel userForm) async {
-    List<dynamic> response = await _restaurantService.fetchNearbyRestaurants(latitude, longitude, ["restaurant"]);
+      double latitude, double longitude, UserFormModel userForm, types) async {
+    List<dynamic> response = await _restaurantService.fetchNearbyRestaurants(latitude, longitude, types);
     List<Map<String, dynamic>> restaurantList = List<Map<String, dynamic>>.from(response);
 
     Map<String, dynamic> userPreferences = {

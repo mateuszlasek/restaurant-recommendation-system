@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import '../services/google_api/google_api_service.dart';
-import 'dart:developer';
+import '../data/restaurant_types.dart';
+import '../services/restaurant/restaurant_data_service.dart';
 
 class SearchSection extends StatefulWidget {
   @override
@@ -11,36 +8,29 @@ class SearchSection extends StatefulWidget {
 }
 
 class _SearchSectionState extends State<SearchSection> {
-  final List<String> types = [
-    'italian_restaurant',
-    'seafood_restaurant',
-    'chinese_restaurant',
-    'cafe',
-    'bar'
-  ];
-  String? selectedType;
+  String? selectedCuisine;
   List<Map<String, dynamic>> restaurants = [];
   bool isLoading = false;
 
-  final RestaurantService _restaurantService = RestaurantService();
+  final RestaurantDataService _restaurantDataService = RestaurantDataService();
 
-  Future<void> fetchRestaurants(String type) async {
+  Future<void> fetchRestaurantsByCuisine(String cuisine) async {
     setState(() {
       isLoading = true;
     });
 
     try {
-      // Pass only the selected type as a single value (not as a list)
-      List<dynamic> response = await _restaurantService.fetchNearbyRestaurants(50.060562, 19.937711, [type]);
+      // Pobierz typy restauracji powiązane z wybraną kuchnią
+      List<String> typesToSearch = restaurantTypes[cuisine] ?? [];
+
+      // Wywołanie API z listą typów restauracji
+      List<Map<String, dynamic>> recommendedRestaurants = await _restaurantDataService.fetchRecommendedRestaurants(typesToSearch);
 
       setState(() {
-        // Update the state with the fetched restaurants
-        // Assuming the 'places' field in the response contains the list of restaurants
-        restaurants = List<Map<String, dynamic>>.from(response);
+        restaurants = recommendedRestaurants; // Aktualizacja stanu z wynikami
       });
-
     } catch (e) {
-      print('Error: $e');
+      print('Error fetching restaurants: $e');
     } finally {
       setState(() {
         isLoading = false;
@@ -50,6 +40,8 @@ class _SearchSectionState extends State<SearchSection> {
 
   @override
   Widget build(BuildContext context) {
+    List<String> cuisines = restaurantTypes.keys.toList();
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -57,25 +49,26 @@ class _SearchSectionState extends State<SearchSection> {
         children: [
           Row(
             children: [
+              // Dropdown menu do wyboru kuchni
               DropdownButton<String>(
-                hint: Text('Select Type'),
-                value: selectedType,
+                hint: Text('Wybierz kuchnię'),
+                value: selectedCuisine,
                 onChanged: (value) {
                   setState(() {
-                    selectedType = value;
+                    selectedCuisine = value;
                   });
                 },
-                items: types.map((String type) {
+                items: cuisines.map((String cuisine) {
                   return DropdownMenuItem<String>(
-                    value: type,
-                    child: Text(type),
+                    value: cuisine,
+                    child: Text(cuisine),
                   );
                 }).toList(),
               ),
               IconButton(
                 icon: Icon(Icons.search),
-                onPressed: selectedType != null
-                    ? () => fetchRestaurants(selectedType!) // Pass the selected type as a single string
+                onPressed: selectedCuisine != null
+                    ? () => fetchRestaurantsByCuisine(selectedCuisine!) // Przekaż wybraną kuchnię
                     : null,
               ),
             ],
@@ -88,14 +81,12 @@ class _SearchSectionState extends State<SearchSection> {
               itemCount: restaurants.length,
               itemBuilder: (context, index) {
                 final restaurant = restaurants[index];
-
-                // Ensure you're accessing the correct fields in the response
                 final displayName = restaurant['displayName']?['text'] ?? 'Unknown name';
                 final formattedAddress = restaurant['formattedAddress'] ?? 'No address available';
 
                 return ListTile(
-                  title: Text(displayName), // Use the correct field for name
-                  subtitle: Text(formattedAddress), // Use the correct field for address
+                  title: Text(displayName), // Wyświetl nazwę restauracji
+                  subtitle: Text(formattedAddress), // Wyświetl adres restauracji
                 );
               },
             ),
