@@ -58,6 +58,7 @@ class _SearchSectionState extends State<SearchSection> {
                     selectedCuisine = value;
                   });
                 },
+                padding: const EdgeInsets.all(0),
                 items: cuisines.map((String cuisine) {
                   return DropdownMenuItem<String>(
                     value: cuisine,
@@ -66,7 +67,7 @@ class _SearchSectionState extends State<SearchSection> {
                 }).toList(),
               ),
               IconButton(
-                icon: Icon(Icons.search),
+                icon: const Icon(Icons.search),
                 onPressed: selectedCuisine != null
                     ? () => fetchRestaurantsByCuisine(selectedCuisine!) // Przekaż wybraną kuchnię
                     : null,

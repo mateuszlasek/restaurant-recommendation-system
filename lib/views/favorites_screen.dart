@@ -38,7 +38,7 @@ class _FavoriteSectionState extends State<FavoriteSection> {
         _favoriteRestaurantIds = data.keys.toSet();
         // Pobieramy szczegóły dla każdej ulubionej restauracji
         _favoriteRestaurants = data.entries.map((entry) {
-          return Place.fromJson(Map<String, dynamic>.from(entry.value));
+          return Place.fromJson(Map<dynamic, dynamic>.from(entry.value));
         }).toList();
         isLoading = false;
       });
@@ -110,7 +110,7 @@ class _FavoriteSectionState extends State<FavoriteSection> {
 
                     return Column(
                       children: [
-                        RestaurantWidget(place: place),
+                        RestaurantWidget(place: place, favoriteRestaurantIds: _favoriteRestaurantIds,),
                         const Divider(
                           height: 0,
                           thickness: 1,

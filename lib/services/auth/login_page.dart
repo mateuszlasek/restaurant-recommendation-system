@@ -28,11 +28,89 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     try {
+      // Próba zalogowania użytkownika
       await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: emailController.text, password: passwordController.text);
-      if (context.mounted) Navigator.pop(context);
+        email: emailController.text,
+        password: passwordController.text,
+      );
+      if (context.mounted) Navigator.pop(context); // Zamknięcie wskaźnika ładowania
     } on FirebaseAuthException catch (e) {
-        Navigator.pop(context);
+      Navigator.pop(context); // Zamknięcie wskaźnika ładowania
+
+      // Sprawdzenie kodu błędu
+      String errorMessage;
+      if (e.code == 'wrong-password') {
+        errorMessage = "The password is incorrect. Please try again.";
+      } else if (e.code == 'user-not-found') {
+        errorMessage = "No user found with this email address.";
+      } else {
+        errorMessage = e.message ?? "An error occurred.";
+      }
+
+      // Wyświetlenie komunikatu błędu
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("Login Error"),
+          content: Text(errorMessage),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("OK"),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+  void resetPassword() async {
+    if (emailController.text.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("Error"),
+          content: const Text("Please enter your email address."),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("OK"),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: emailController.text);
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("Success"),
+          content: const Text("Password reset email has been sent."),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("OK"),
+            ),
+          ],
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("Error"),
+          content: Text(e.message ?? "An error occurred."),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("OK"),
+            ),
+          ],
+        ),
+      );
     }
   }
 
@@ -75,10 +153,16 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(
                   height: 5,
                 ),
-                const Row(
+                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text("Forgot Password?"),
+                    GestureDetector(
+                      onTap: resetPassword,
+                      child: const Text(
+                        "Forgot Password?",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    )
                   ],
                 ),
                 const SizedBox(
