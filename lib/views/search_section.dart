@@ -1,5 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import '../components/restaurant_info_widget.dart';
 import '../data/restaurant_types.dart';
+import '../models/google_api_model.dart';
 import '../services/restaurant/restaurant_data_service.dart';
 
 class SearchSection extends StatefulWidget {
@@ -10,9 +14,38 @@ class SearchSection extends StatefulWidget {
 class _SearchSectionState extends State<SearchSection> {
   String? selectedCuisine;
   List<Map<String, dynamic>> restaurants = [];
+  List<Place> recommendedRestaurantsList = [];
   bool isLoading = false;
 
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final DatabaseReference _database = FirebaseDatabase.instance.ref();
+
+  Set<String> _favoriteRestaurantIds = {};
+
   final RestaurantDataService _restaurantDataService = RestaurantDataService();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFavorites();
+  }
+
+  // Ładowanie ulubionych restauracji z Firebase
+  Future<void> _loadFavorites() async {
+    final user = _auth.currentUser;
+    if (user == null) return;
+
+    final userFavoritesRef = _database.child('usersFavorites/${user.uid}');
+    final snapshot = await userFavoritesRef.get();
+
+    if (snapshot.exists) {
+      final data = Map<String, dynamic>.from(snapshot.value as Map);
+      setState(() {
+        // Ustawiamy ulubione restauracje na podstawie ID z Firebase
+        _favoriteRestaurantIds = data.keys.toSet();
+      });
+    }
+  }
 
   Future<void> fetchRestaurantsByCuisine(String cuisine) async {
     setState(() {
@@ -28,6 +61,7 @@ class _SearchSectionState extends State<SearchSection> {
 
       setState(() {
         restaurants = recommendedRestaurants; // Aktualizacja stanu z wynikami
+        recommendedRestaurantsList = restaurants.map((data) => Place.fromJson(data)).toList();
       });
     } catch (e) {
       print('Error fetching restaurants: $e');
@@ -38,27 +72,51 @@ class _SearchSectionState extends State<SearchSection> {
     }
   }
 
+  // Future<void> fetchRestaurants(String type) async {
+  //   setState(() {
+  //     isLoading = true;
+  //   });
+  //
+  //   try {
+  //     // Pass only the selected type as a single value (not as a list)
+  //     // List<dynamic> restaurantData = await _restaurantService.fetchNearbyRestaurants(50.060562, 19.937711, [type]);
+  //
+  //     setState(() {
+  //       // Update the state with the fetched restaurants
+  //       // Assuming the 'places' field in the response contains the list of restaurants
+  //       // restaurants = List<Map<String, dynamic>>.from(response);
+  //       recommendedRestaurants = restaurants.map((data) => Place.fromJson(data)).toList();
+  //     });
+  //
+  //   } catch (e) {
+  //     print('Error: $e');
+  //   } finally {
+  //     setState(() {
+  //       isLoading = false;
+  //     });
+  //   }
+  // }
+
   @override
   Widget build(BuildContext context) {
     List<String> cuisines = restaurantTypes.keys.toList();
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
             children: [
-              // Dropdown menu do wyboru kuchni
               DropdownButton<String>(
-                hint: Text('Wybierz kuchnię'),
+                hint: Text('Select Type'),
                 value: selectedCuisine,
                 onChanged: (value) {
                   setState(() {
                     selectedCuisine = value;
                   });
                 },
-                padding: const EdgeInsets.all(0),
                 items: cuisines.map((String cuisine) {
                   return DropdownMenuItem<String>(
                     value: cuisine,
@@ -67,33 +125,38 @@ class _SearchSectionState extends State<SearchSection> {
                 }).toList(),
               ),
               IconButton(
-                icon: const Icon(Icons.search),
+                icon: Icon(Icons.search),
                 onPressed: selectedCuisine != null
-                    ? () => fetchRestaurantsByCuisine(selectedCuisine!) // Przekaż wybraną kuchnię
+                    ? () => fetchRestaurantsByCuisine(selectedCuisine!) // Pass the selected type as a single string
                     : null,
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          isLoading
-              ? Center(child: CircularProgressIndicator())
-              : Expanded(
-            child: ListView.builder(
-              itemCount: restaurants.length,
-              itemBuilder: (context, index) {
-                final restaurant = restaurants[index];
-                final displayName = restaurant['displayName']?['text'] ?? 'Unknown name';
-                final formattedAddress = restaurant['formattedAddress'] ?? 'No address available';
-
-                return ListTile(
-                  title: Text(displayName), // Wyświetl nazwę restauracji
-                  subtitle: Text(formattedAddress), // Wyświetl adres restauracji
-                );
-              },
-            ),
+        ),
+        const SizedBox(height: 16),
+        isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : Expanded(
+          child: ListView.builder(
+            itemCount: recommendedRestaurantsList.length,
+            itemBuilder: (context, index) {
+              final place = recommendedRestaurantsList[index];
+              return Column(
+                children: [
+                  RestaurantWidget(place: place, favoriteRestaurantIds: _favoriteRestaurantIds,),
+                  const Divider(
+                    height: 0,
+                    thickness: 1,
+                    color: Colors.amber,
+                    indent: 0,
+                    endIndent: 0,
+                  )
+                ],
+              );
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

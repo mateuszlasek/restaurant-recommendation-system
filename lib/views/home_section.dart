@@ -79,9 +79,11 @@ class _HomeSectionState extends State<HomeSection> {
         },
       });
     }
+    _loadFavorites();
   }
 
   Future<void> _fetchRecommendations() async {
+    _loadFavorites();
     try {
       List<Map<String, dynamic>> restaurantData = await _dataService.fetchRecommendedRestaurants(["restaurant"]);
       setState(() {

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:proj_inz/data/restaurant_emojis.dart';
 import 'package:proj_inz/models/google_api_model.dart';
 
 import '../views/restaurant_location_screen.dart';
@@ -16,6 +17,7 @@ class RestaurantWidget extends StatefulWidget {
 }
 
 class _RestaurantWidgetState extends State<RestaurantWidget> {
+  final emojisList = restaurantTypesEmojis;
 
   bool showOptions = false;
 
@@ -102,8 +104,12 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
                 Container(
                   width: 60,
                   height: 60,
-                  color: Colors.grey,
-                  child: const Icon(Icons.image, size: 40),
+                  child: Text(
+                    emojisList[widget.place.types[0]] ?? "🍴",
+                    style: const TextStyle(
+                      fontSize: 40,
+                    ),
+                  ),
                 ),
                 const SizedBox(width: 10),
                 // Restaurant information
