@@ -72,31 +72,6 @@ class _SearchSectionState extends State<SearchSection> {
     }
   }
 
-  // Future<void> fetchRestaurants(String type) async {
-  //   setState(() {
-  //     isLoading = true;
-  //   });
-  //
-  //   try {
-  //     // Pass only the selected type as a single value (not as a list)
-  //     // List<dynamic> restaurantData = await _restaurantService.fetchNearbyRestaurants(50.060562, 19.937711, [type]);
-  //
-  //     setState(() {
-  //       // Update the state with the fetched restaurants
-  //       // Assuming the 'places' field in the response contains the list of restaurants
-  //       // restaurants = List<Map<String, dynamic>>.from(response);
-  //       recommendedRestaurants = restaurants.map((data) => Place.fromJson(data)).toList();
-  //     });
-  //
-  //   } catch (e) {
-  //     print('Error: $e');
-  //   } finally {
-  //     setState(() {
-  //       isLoading = false;
-  //     });
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     List<String> cuisines = restaurantTypes.keys.toList();
