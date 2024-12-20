@@ -79,9 +79,11 @@ class _HomeSectionState extends State<HomeSection> {
         },
       });
     }
+    _loadFavorites();
   }
 
   Future<void> _fetchRecommendations() async {
+    _loadFavorites();
     try {
       List<Map<String, dynamic>> restaurantData = await _dataService.fetchRecommendedRestaurants(["restaurant"]);
       setState(() {
@@ -115,20 +117,21 @@ class _HomeSectionState extends State<HomeSection> {
 
                   return Column(
                     children: [
-                      ListTile(
-                        title: RestaurantWidget(place: place), // Twoje detale restauracji
-                        trailing: IconButton(
-                          icon: Icon(
-                            _favoriteRestaurantIds.contains(restaurantId)
-                                ? Icons.star
-                                : Icons.star_border,
-                            color: _favoriteRestaurantIds.contains(restaurantId)
-                                ? Colors.yellow
-                                : Colors.grey,
-                          ),
-                          onPressed: () => _toggleFavorite(place),
-                        ),
-                      ),
+                      RestaurantWidget(place: place, favoriteRestaurantIds: _favoriteRestaurantIds,),
+                      // ListTile(
+                      //   title: RestaurantWidget(place: place), // Twoje detale restauracji
+                      //   trailing: IconButton(
+                      //     icon: Icon(
+                      //       _favoriteRestaurantIds.contains(restaurantId)
+                      //           ? Icons.star
+                      //           : Icons.star_border,
+                      //       color: _favoriteRestaurantIds.contains(restaurantId)
+                      //           ? Colors.yellow
+                      //           : Colors.grey,
+                      //     ),
+                      //     onPressed: () => _toggleFavorite(place),
+                      //   ),
+                      // ),
                       const Divider(
                         height: 0,
                         thickness: 1,

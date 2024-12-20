@@ -1,19 +1,88 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:proj_inz/data/restaurant_emojis.dart';
 import 'package:proj_inz/models/google_api_model.dart';
 
 import '../views/restaurant_location_screen.dart';
 
 class RestaurantWidget extends StatefulWidget {
   final Place place;
+  final Set<String> favoriteRestaurantIds;
 
-  const RestaurantWidget({super.key, required this.place});
+  const RestaurantWidget({super.key, required this.place, required this.favoriteRestaurantIds});
 
   @override
   _RestaurantWidgetState createState() => _RestaurantWidgetState();
 }
 
 class _RestaurantWidgetState extends State<RestaurantWidget> {
+  final emojisList = restaurantTypesEmojis;
+
   bool showOptions = false;
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final DatabaseReference _database = FirebaseDatabase.instance.ref();
+
+  late Set<String> _favoriteRestaurantIds = widget.favoriteRestaurantIds;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFavorites();
+  }
+
+  Future<void> _loadFavorites() async {
+    final user = _auth.currentUser;
+    if (user == null) return;
+
+    final userFavoritesRef = _database.child('usersFavorites/${user.uid}');
+    final snapshot = await userFavoritesRef.get();
+
+    if (snapshot.exists) {
+      final data = Map<String, dynamic>.from(snapshot.value as Map);
+      setState(() {
+        // Ustawiamy ulubione restauracje na podstawie ID z Firebase
+        _favoriteRestaurantIds = data.keys.toSet();
+      });
+    }
+  }
+
+  Future<void> _toggleFavorite(Place restaurant) async {
+    final user = _auth.currentUser;
+    if (user == null) return;
+
+    final userFavoritesRef = _database.child('usersFavorites/${user.uid}/${restaurant.id}');
+
+    if (_favoriteRestaurantIds.contains(restaurant.id)) {
+      // Usuń z ulubionych
+      setState(() => _favoriteRestaurantIds.remove(restaurant.id));
+      await userFavoritesRef.remove();
+    } else {
+      // Dodaj do ulubionych
+      setState(() => _favoriteRestaurantIds.add(restaurant.id));
+      await userFavoritesRef.set({
+        'name': restaurant.name,
+        'displayName': {
+          'text': restaurant.displayName.text,
+          'languageCode': restaurant.displayName.languageCode
+        },
+        'shortFormattedAddress': restaurant.shortFormattedAddress,
+        'rating': restaurant.rating,
+        'userRatingCount': restaurant.userRatingCount,
+        'priceLevel': restaurant.priceLevel,
+        'primaryTypeDisplayName': {
+          'text': restaurant.primaryTypeDisplayName.text,
+          'languageCode': restaurant.primaryTypeDisplayName.languageCode
+        },
+        'location': {
+          'latitude': restaurant.location.latitude,
+          'longitude': restaurant.location.longitude,
+        },
+      });
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +104,12 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
                 Container(
                   width: 60,
                   height: 60,
-                  color: Colors.grey,
-                  child: const Icon(Icons.image, size: 40),
+                  child: Text(
+                    emojisList[widget.place.types[0]] ?? "🍴",
+                    style: const TextStyle(
+                      fontSize: 40,
+                    ),
+                  ),
                 ),
                 const SizedBox(width: 10),
                 // Restaurant information
@@ -129,6 +202,13 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
                   _buildIcon(Icons.nfc_rounded, 'NFC', widget.place.paymentOptions.acceptsNfc ? Colors.green : Colors.white10),
                   _buildIcon(Icons.live_tv_outlined, 'Sports', widget.place.goodForWatchingSports ? Colors.green : Colors.white10),
                   // _buildIcon(Icons.takeout_dining, 'Takeout', widget.place.takeout ? Colors.green : Colors.red),
+                  IconButton(
+                      onPressed: () {_toggleFavorite(widget.place);},
+                      icon: Icon(
+                        _favoriteRestaurantIds.contains(widget.place.id) ? Icons.star : Icons.star_border,
+                        color: Colors.amber,
+                      )
+                  )
                 ],
               ),
             ),

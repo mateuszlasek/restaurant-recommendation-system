@@ -95,12 +95,6 @@ class _RegisterPageState extends State<RegisterPage> {
                 const SizedBox(
                   height: 5,
                 ),
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text("Forgot Password?"),
-                  ],
-                ),
                 const SizedBox(
                   height: 5,
                 ),
