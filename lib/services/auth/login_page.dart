@@ -123,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                const Text("Login Page"),
+                const Text("Sign In"),
                 const SizedBox(
                   height: 25,
                 ),
@@ -168,7 +168,7 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(
                   height: 5,
                 ),
-                MyButton(onTap: login),
+                MyButton(onTap: login, text: "Sign In",),
                 const SizedBox(
                   height: 10,
                 ),

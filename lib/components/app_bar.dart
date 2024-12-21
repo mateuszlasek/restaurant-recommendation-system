@@ -30,7 +30,7 @@ Future<void> _saveLocation(Position position) async {
 AppBar buildAppBar(BuildContext context) {
   return AppBar(
     title: const Text(
-      'Marchew na patyku',
+      'LocEat',
       style: TextStyle(color: Colors.amber),
     ),
     leading: IconButton(

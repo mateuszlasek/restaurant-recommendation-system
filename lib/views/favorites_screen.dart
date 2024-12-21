@@ -36,7 +36,7 @@ class _FavoriteSectionState extends State<FavoriteSection> {
       final data = Map<String, dynamic>.from(snapshot.value as Map);
       setState(() {
         _favoriteRestaurantIds = data.keys.toSet();
-        // Pobieramy szczegóły dla każdej ulubionej restauracji
+
         _favoriteRestaurants = data.entries.map((entry) {
           return Place.fromJson(Map<dynamic, dynamic>.from(entry.value));
         }).toList();

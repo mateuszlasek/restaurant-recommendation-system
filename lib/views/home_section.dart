@@ -104,7 +104,10 @@ class _HomeSectionState extends State<HomeSection> {
       child: isLoading
           ? const CircularProgressIndicator(color: Colors.amber)
           : RefreshIndicator(
-        onRefresh: _fetchRecommendations,
+        onRefresh: () async {
+          await _loadFavorites();
+          await _fetchRecommendations();
+          },
         color: Colors.amber,
         child: Column(
           children: [

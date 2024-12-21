@@ -58,7 +58,7 @@ class _RegisterPageState extends State<RegisterPage> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                const Text("Register Page"),
+                const Text("Sign Up"),
                 const SizedBox(
                   height: 25,
                 ),
@@ -98,7 +98,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 const SizedBox(
                   height: 5,
                 ),
-                MyButton(onTap: register),
+                MyButton(onTap: register, text: "Sign Up",),
                 const SizedBox(
                   height: 10,
                 ),
