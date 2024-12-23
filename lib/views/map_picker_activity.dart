@@ -27,7 +27,6 @@ class _MapActivityState extends State<MapPickerActivity> {
   void initState() {
     super.initState();
     _selectedPosition = LatLng(widget.lat, widget.lng); // Ustawienie domyślnej pozycji
-    _loadSavedLocation(); // Wczytanie zapisanej lokalizacji
   }
 
   // Funkcja do zapisywania lokalizacji w SharedPreferences
@@ -38,24 +37,6 @@ class _MapActivityState extends State<MapPickerActivity> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setStringList('Position', [position.latitude.toString(), position.longitude.toString()]);
     Future.delayed(Duration(milliseconds: 1000));
-    // // Sprawdź zapisane wartości
-    // double? savedLat = prefs.getDouble('latitude');
-    // double? savedLng = prefs.getDouble('longitude');
-    // print("Saved lat: $savedLat, saved lng: $savedLng");
-  }
-
-  // Funkcja do ładowania zapisanej lokalizacji z SharedPreferences
-  Future<void> _loadSavedLocation() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String>? position = prefs.getStringList("Position");
-    // double? lng = prefs.getDouble('longitude');
-    // if (lat != null && lng != null) {
-    //   setState(() {
-    //     _selectedPosition = LatLng(lat, lng);
-    //   });
-    // }
-    print("Lat lang");
-    print(position);
   }
 
   @override
@@ -109,7 +90,6 @@ class _MapActivityState extends State<MapPickerActivity> {
           });
           // Zapisuje nową pozycję po tapnięciu na mapę
           _saveLocation(position);
-          _loadSavedLocation();
         },
         mapType: MapType.normal,
       ),
