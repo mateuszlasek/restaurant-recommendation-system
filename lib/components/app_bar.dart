@@ -34,12 +34,28 @@ AppBar buildAppBar(BuildContext context) {
       style: TextStyle(color: Colors.amber),
     ),
     leading: IconButton(
-      onPressed: () {
+      onPressed: () async {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        List<String>? savedPosition = prefs.getStringList("Position");
+        var lat;
+        var lng;
+        if(savedPosition != null && savedPosition.isNotEmpty) {
+          lat = double.parse(savedPosition.first);
+          lng = double.parse(savedPosition.last);
+        } else {
+          Position determinedPosition = await _determinePosition();
+          lat = determinedPosition.latitude;
+          lng = determinedPosition.longitude;
+        }
+
         // Użyj Navigator.push, aby przejść do MapPickerActivity
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => MapPickerActivity(lat:50.06159761834602, lng: 19.93765353577862),
+            builder: (context) => MapPickerActivity(
+                lat: lat,
+                lng: lng
+            ),
           ),
         );
       },
