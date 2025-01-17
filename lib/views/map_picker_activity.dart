@@ -68,7 +68,7 @@ class _MapActivityState extends State<MapPickerActivity> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Select Location'),
+        title: const Text('Wybrana lokalizacja'),
         actions: [
           IconButton(
             icon: const Icon(Icons.check),

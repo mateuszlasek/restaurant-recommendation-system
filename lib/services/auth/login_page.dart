@@ -40,18 +40,18 @@ class _LoginPageState extends State<LoginPage> {
       // Sprawdzenie kodu błędu
       String errorMessage;
       if (e.code == 'wrong-password') {
-        errorMessage = "The password is incorrect. Please try again.";
+        errorMessage = "Hasło niepoprawne. Spróbuj ponownie.";
       } else if (e.code == 'user-not-found') {
-        errorMessage = "No user found with this email address.";
+        errorMessage = "Brak użytkownika o podanym adresie email.";
       } else {
-        errorMessage = e.message ?? "An error occurred.";
+        errorMessage = e.message ?? "Wystąpił błąd.";
       }
 
       // Wyświetlenie komunikatu błędu
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text("Login Error"),
+          title: const Text("Błąd logowania"),
           content: Text(errorMessage),
           actions: [
             TextButton(
@@ -69,8 +69,8 @@ class _LoginPageState extends State<LoginPage> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text("Error"),
-          content: const Text("Please enter your email address."),
+          title: const Text("Błąd"),
+          content: const Text("Wpisz swój adres email."),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -87,8 +87,8 @@ class _LoginPageState extends State<LoginPage> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text("Success"),
-          content: const Text("Password reset email has been sent."),
+          title: const Text("Sukces"),
+          content: const Text("email do resetowania hasła został wysłany"),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -101,8 +101,8 @@ class _LoginPageState extends State<LoginPage> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text("Error"),
-          content: Text(e.message ?? "An error occurred."),
+          title: const Text("Błąd"),
+          content: Text(e.message ?? "Wystąpił błąd."),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -123,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                const Text("Sign In"),
+                const Text("Zaloguj się"),
                 const SizedBox(
                   height: 25,
                 ),
@@ -148,7 +148,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 MyTextField(
                     controller: passwordController,
-                    hintText: "Password",
+                    hintText: "Hasło",
                     obscureText: true),
                 const SizedBox(
                   height: 5,
@@ -159,7 +159,7 @@ class _LoginPageState extends State<LoginPage> {
                     GestureDetector(
                       onTap: resetPassword,
                       child: const Text(
-                        "Forgot Password?",
+                        "Zapomniałeś hasła?",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     )
@@ -168,18 +168,18 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(
                   height: 5,
                 ),
-                MyButton(onTap: login, text: "Sign In",),
+                MyButton(onTap: login, text: "Zaloguj się",),
                 const SizedBox(
                   height: 10,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text("Don't have an account?"),
+                    const Text("Nie masz konta?"),
                     GestureDetector(
                       onTap: widget.onTap,
                       child: const Text(
-                        " Register here",
+                        " Zarejestruj się tutaj",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     )

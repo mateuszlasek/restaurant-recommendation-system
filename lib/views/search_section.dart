@@ -85,7 +85,7 @@ class _SearchSectionState extends State<SearchSection> {
           child: Row(
             children: [
               DropdownButton<String>(
-                hint: Text('Select Type'),
+                hint: Text('Typ kuchni'),
                 value: selectedCuisine,
                 onChanged: (value) {
                   setState(() {

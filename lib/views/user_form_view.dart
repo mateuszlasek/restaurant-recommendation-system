@@ -191,18 +191,18 @@ class _UserFormViewState extends State<UserFormView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Formularz użytkownika'),
+        title: const Text('Formularz użytkownika'),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               _categories[_currentPageIndex],
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Expanded(child: _buildCategoryContent()),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -210,17 +210,19 @@ class _UserFormViewState extends State<UserFormView> {
                 if (_currentPageIndex > 0)
                   ElevatedButton(
                     onPressed: _previousPage,
-                    child: Text('Poprzedni'),
+                    child: const Text('Poprzedni'),
                   ),
+                if (_currentPageIndex == 0)
+                  const SizedBox(width: 5,),
                 if (_currentPageIndex < _categories.length - 1)
                   ElevatedButton(
                     onPressed: _nextPage,
-                    child: Text('Następny'),
+                    child: const Text('Następny'),
                   ),
                 if (_currentPageIndex == _categories.length - 1)
                   ElevatedButton(
                     onPressed: _submitForm,
-                    child: Text('Zapisz'),
+                    child: const Text('Zapisz'),
                   ),
               ],
             ),

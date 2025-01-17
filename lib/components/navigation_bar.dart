@@ -14,9 +14,9 @@ class AppNavigationBar extends StatelessWidget {
       elevation: 2,
       backgroundColor: Colors.black12,
       items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Items'),
-        BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
-        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+        BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Odkryj'),
+        BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Wyszukaj'),
+        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profil'),
       ],
     );
   }

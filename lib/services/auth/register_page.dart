@@ -58,7 +58,7 @@ class _RegisterPageState extends State<RegisterPage> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                const Text("Sign Up"),
+                const Text("Zarejestruj się"),
                 const SizedBox(
                   height: 25,
                 ),
@@ -83,14 +83,14 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 MyTextField(
                     controller: passwordController,
-                    hintText: "Password",
+                    hintText: "Hasło",
                     obscureText: true),
                 const SizedBox(
                   height: 5,
                 ),
                 MyTextField(
                     controller: passwordConiformController,
-                    hintText: "Coniform Password",
+                    hintText: "Potwierdź hasło",
                     obscureText: true),
                 const SizedBox(
                   height: 5,
@@ -98,18 +98,18 @@ class _RegisterPageState extends State<RegisterPage> {
                 const SizedBox(
                   height: 5,
                 ),
-                MyButton(onTap: register, text: "Sign Up",),
+                MyButton(onTap: register, text: "Zarejestruj się",),
                 const SizedBox(
                   height: 10,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text("Already have an account?"),
+                    const Text("Masz już konto?"),
                     GestureDetector(
                       onTap: widget.onTap,
                       child: const Text(
-                        " Login here",
+                        " Zaloguj się tutaj",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     )

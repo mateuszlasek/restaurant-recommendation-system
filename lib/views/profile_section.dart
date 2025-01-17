@@ -42,8 +42,8 @@ class ProfileSection extends StatelessWidget {
                 MaterialPageRoute(builder: (context) => FavoriteSection()),
               );
             },
-            child: const Text('Favorites'),
-          ),          ElevatedButton(onPressed: _logout, child: const Text('Logout')),
+            child: const Text('Ulubione'),
+          ),          ElevatedButton(onPressed: _logout, child: const Text('Wyloguj')),
         ],
       ),
     );
