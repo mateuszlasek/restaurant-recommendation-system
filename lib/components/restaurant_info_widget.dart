@@ -56,11 +56,15 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
 
     if (_favoriteRestaurantIds.contains(restaurant.id)) {
       // Usuń z ulubionych
-      setState(() => _favoriteRestaurantIds.remove(restaurant.id));
+      setState(() {
+        _favoriteRestaurantIds.remove(restaurant.id);
+      });
       await userFavoritesRef.remove();
     } else {
       // Dodaj do ulubionych
-      setState(() => _favoriteRestaurantIds.add(restaurant.id));
+      setState(() {
+        _favoriteRestaurantIds.add(restaurant.id);
+      });
       await userFavoritesRef.set({
         'name': restaurant.name,
         'displayName': {
@@ -83,9 +87,14 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
+    // Check if place types is not empty to avoid accessing an empty index
+    String emoji = "🍴"; // Default emoji
+    if (widget.place.types.isNotEmpty) {
+      emoji = emojisList[widget.place.types[0]] ?? "🍴";
+    }
+
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -105,7 +114,7 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
                   width: 60,
                   height: 60,
                   child: Text(
-                    emojisList[widget.place.types[0]] ?? "🍴",
+                    emoji,
                     style: const TextStyle(
                       fontSize: 40,
                     ),
@@ -170,17 +179,9 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
                       },
                       icon: const Icon(Icons.map, size: 24),
                     ), // wyświetlanie lokalizacji restauracji
-                    _buildPrice(widget.place.priceLevel)
-                    /*
-                    const Text(
-                      '500m', // Update with real distance if available
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                     */
+                    _buildPrice(widget.place.priceLevel),
                   ],
                 )
-                // Distance (if available)
-
               ],
             ),
           ),
@@ -188,7 +189,7 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
           if (showOptions)
             Container(
               decoration: const BoxDecoration(
-                color: Colors.black26
+                  color: Colors.black26
               ),
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               child: Row(
@@ -201,14 +202,13 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
                   _buildIcon(Icons.credit_card, 'Credit', widget.place.paymentOptions.acceptsCreditCards || widget.place.paymentOptions.acceptsDebitCards ? Colors.green : Colors.red),
                   _buildIcon(Icons.nfc_rounded, 'NFC', widget.place.paymentOptions.acceptsNfc ? Colors.green : Colors.white10),
                   _buildIcon(Icons.live_tv_outlined, 'Sports', widget.place.goodForWatchingSports ? Colors.green : Colors.white10),
-                  // _buildIcon(Icons.takeout_dining, 'Takeout', widget.place.takeout ? Colors.green : Colors.red),
                   IconButton(
-                      onPressed: () {_toggleFavorite(widget.place);},
-                      icon: Icon(
-                        _favoriteRestaurantIds.contains(widget.place.id) ? Icons.star : Icons.star_border,
-                        color: Colors.amber,
-                      )
-                  )
+                    onPressed: () {_toggleFavorite(widget.place);},
+                    icon: Icon(
+                      _favoriteRestaurantIds.contains(widget.place.id) ? Icons.star : Icons.star_border,
+                      color: Colors.amber,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -222,7 +222,6 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
     return Column(
       children: [
         Icon(icon, color: color),
-        // Text(label, style: TextStyle(fontSize: 10)),
       ],
     );
   }
@@ -248,14 +247,14 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
     }
 
     List<Widget> dollarIcons = List.generate(
-        level,
-        (index) => const Text(
-          "\$",
-          style: TextStyle(
+      level,
+          (index) => const Text(
+        "\$",
+        style: TextStyle(
             color: Colors.green,
             fontSize: 15
-          ),
         ),
+      ),
     );
 
     return Row(

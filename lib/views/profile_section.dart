@@ -7,8 +7,9 @@ import 'favorites_screen.dart';
 class ProfileSection extends StatelessWidget {
   const ProfileSection({super.key});
 
-  void _logout() {
+  void _logout(BuildContext context) {
     FirebaseAuth.instance.signOut();
+    //Navigator.pushNamed(context, '/auth');
   }
 
   @override
@@ -39,11 +40,11 @@ class ProfileSection extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => FavoriteSection()),
+                MaterialPageRoute(builder: (context) => const FavoriteSection()),
               );
             },
             child: const Text('Ulubione'),
-          ),          ElevatedButton(onPressed: _logout, child: const Text('Wyloguj')),
+          ),          ElevatedButton(onPressed: () {_logout(context);}, child: const Text('Wyloguj')),
         ],
       ),
     );
